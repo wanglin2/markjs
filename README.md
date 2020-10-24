@@ -28,19 +28,6 @@ import markjs from 'markjs'
 
 同时这个示例也演示了鼠标样式插件的功能，就是在特定的情况下显示特定的鼠标指针及提示信息，如果你不需要可以不引入，需要定制也可以自己开发对应的插件。
 
-<template>
-  <code-box title="基础用法" description="点击新增标注按钮来创建一个新标注区域，点击进行绘制，双击结束，最终的数据以比例值返回。">
-    <div class="container">
-      <div class="markBox" ref="markBox1"></div>
-      <el-button type="primary" @click="create1" :disabled="!editing1 || !!curEditMarkItem1">新增标注</el-button>
-      <el-button type="primary" @click="exit1" :disabled="!isCreateMarking1">退出新增</el-button>
-      <el-button type="primary" @click="getMarkData1">获取标注（控制台查看）</el-button>
-      <el-button type="primary" icon="h-icon-delete" @click="deleteItem1" :disabled="!curEditMarkItem1"></el-button>
-      <el-button type="primary" icon="h-icon-delete" @click="deleteAll1">删除全部</el-button>
-    </div>
-  </code-box>
-</template>
-
 ```vue
 <template>
   <div class="container">
@@ -121,19 +108,6 @@ export default {
 如果实际绘制区域和容器大小不一致，默认会居中进行显示。
 
 同时本示例演示了线段的交叉检测及最多能绘制的区域限制功能。
-
-<template>
-  <code-box title="标注图片" description="使用图片插件需要传入图片插件的参数`img`，指定图片的地址。">
-    <div class="container">
-      <div class="markBox" ref="markBox2"></div>
-      <el-button type="primary" @click="create2" :disabled="!editing2 || !!curEditMarkItem2">新增标注</el-button>
-      <el-button type="primary" @click="exit2" :disabled="!isCreateMarking2">退出新增</el-button>
-      <el-button type="primary" @click="getMarkData2">获取标注（控制台查看）</el-button>
-      <el-button type="primary" icon="h-icon-delete" @click="deleteItem2" :disabled="!curEditMarkItem2"></el-button>
-      <el-button type="primary" icon="h-icon-delete" @click="deleteAll2">删除全部</el-button>
-    </div>
-  </code-box>
-</template>
 
 ```vue
 <template>
@@ -227,19 +201,6 @@ export default {
 
 同时本示例也演示了在创建新标注时可通过第二个参数传入配置项，定义填充颜色等。
 
-<template>
-  <code-box title="特定形状" description="">
-    <div class="container" ref="container">
-      <div class="markBox" ref="markBox3"></div>
-      <el-button type="primary" @click="createShape3" :disabled="!editing3 || !!curEditMarkItem3">创建形状</el-button>
-      <el-button type="primary" @click="exit3" :disabled="!isCreateMarking3">退出新增</el-button>
-      <el-button type="primary" @click="getMarkData3">获取标注（控制台查看）</el-button>
-      <el-button type="primary" icon="h-icon-delete" @click="deleteItem3" :disabled="!curEditMarkItem3"></el-button>
-      <el-button type="primary" icon="h-icon-delete" @click="deleteAll3">删除全部</el-button>
-    </div>
-  </code-box>
-</template>
-
 ```vue
 <template>
 <div class="container" ref="container">
@@ -320,19 +281,6 @@ export default {
 ## 单独编辑
 
 默认情况下激活某个区域进行标注时其他非激活标注仍然会存在，可以通过设置属性`single`为`true`来控制只显示激活的那个标注区域。
-
-<template>
-  <code-box title="单独编辑" description="">
-    <div class="container">
-      <div class="markBox" ref="markBox4"></div>
-      <el-button type="primary" @click="create4" :disabled="!editing4 || !!curEditMarkItem4">新增标注</el-button>
-      <el-button type="primary" @click="exit4" :disabled="!isCreateMarking4">退出新增</el-button>
-      <el-button type="primary" @click="getMarkData4">获取标注（控制台查看）</el-button>
-      <el-button type="primary" icon="h-icon-delete" @click="deleteItem4" :disabled="!curEditMarkItem4"></el-button>
-      <el-button type="primary" icon="h-icon-delete" @click="deleteAll4">删除全部</el-button>
-    </div>
-  </code-box>
-</template>
 
 ```vue
 <template>
@@ -415,21 +363,6 @@ export default {
 初始设通过`readonly`为`true`设为只读模式，通过方法开启为编辑模式。
 
 回显了部分数据，包括特定形状，回显可设置单独的样式。
-
-<template>
-  <code-box title="综合示例" description="">
-    <div class="container" ref="container">
-      <div class="markBox" ref="markBox5"></div>
-      <el-button type="primary" @click="edit5">{{editing5 ? '切换到只读模式' : '切换到编辑模式'}}</el-button>
-      <el-button type="primary" @click="create5" :disabled="!editing5 || !!curEditMarkItem5">新增标注</el-button>
-      <el-button type="primary" @click="createShape5" :disabled="!editing5 || !!curEditMarkItem5">创建形状</el-button>
-      <el-button type="primary" @click="exit5" :disabled="!isCreateMarking5">退出新增</el-button>
-      <el-button type="primary" @click="getMarkData5">获取标注（控制台查看）</el-button>
-      <el-button type="primary" icon="h-icon-delete" @click="deleteItem5" :disabled="!curEditMarkItem5"></el-button>
-      <el-button type="primary" icon="h-icon-delete" @click="deleteAll5">删除全部</el-button>
-    </div>
-  </code-box>
-</template>
 
 ```vue
 <template>
