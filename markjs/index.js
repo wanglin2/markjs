@@ -90,6 +90,8 @@ class Markjs {
             x: 0,
             y: 0
         }
+        // 鼠标上次点击的时间
+        this.lastClickTime = 0
 
         // 固化事件函数的this
         this.bindEventCallback()
@@ -194,7 +196,6 @@ class Markjs {
      */
     bindEventCallback() {
         this.onclick = this.onclick.bind(this)
-        this.ondblclick = this.ondblclick.bind(this)
         this.onmousedown = this.onmousedown.bind(this)
         this.onmousemove = this.onmousemove.bind(this)
         this.onmouseup = this.onmouseup.bind(this)
@@ -210,8 +211,7 @@ class Markjs {
      * @Desc: 绑定事件 
      */
     bindEvent() {
-        // this.canvasEle.addEventListener('click', this.onclick)
-        this.canvasEle.addEventListener('dblclick', this.ondblclick)
+        this.canvasEle.addEventListener('click', this.onclick)
         this.canvasEle.addEventListener('mousedown', this.onmousedown)
         this.canvasEle.addEventListener('mousemove', this.onmousemove)
         window.addEventListener('mouseup', this.onmouseup)
@@ -227,8 +227,7 @@ class Markjs {
      * @Desc: 解绑事件 
      */
     unbindEvent() {
-        // this.canvasEle.removeEventListener('click', this.onclick)
-        this.canvasEle.removeEventListener('dblclick', this.ondblclick)
+        this.canvasEle.removeEventListener('click', this.onclick)
         this.canvasEle.removeEventListener('mousedown', this.onmousedown)
         this.canvasEle.removeEventListener('mousemove', this.onmousemove)
         window.removeEventListener('mouseup', this.onmouseup)
@@ -248,23 +247,19 @@ class Markjs {
             clearTimeout(this.clickTimer)
             this.clickTimer = null
         }
+
         this.clickTimer = setTimeout(() => {
             this.observer.publish('CLICK', e)
         }, this.opt.dbClickTime);
-    }
 
-    /** 
-     * javascript comment 
-     * @Author: 王林25 
-     * @Date: 2020-10-15 13:59:12 
-     * @Desc: 双击事件 
-     */
-    ondblclick(e) {
-        if (this.clickTimer) {
+        if (Date.now() - this.lastClickTime <= this.opt.dbClickTime) {
             clearTimeout(this.clickTimer)
             this.clickTimer = null
+            this.lastClickTime = 0
+            this.observer.publish('DOUBLE-CLICK', e)
         }
-        this.observer.publish('DOUBLE-CLICK', e)
+
+        this.lastClickTime = Date.now()
     }
 
     /** 
@@ -303,10 +298,6 @@ class Markjs {
             y: e.clientY
         }
         this.observer.publish('MOUSEUP', e)
-        // 模拟click事件
-        if (this.mouseupPos.x === this.mousedownPos.x && this.mouseupPos.y === this.mousedownPos.y) {
-            this.onclick(e)
-        }
     }
 
     /** 
