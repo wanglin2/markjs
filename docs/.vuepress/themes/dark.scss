@@ -1,0 +1,129 @@
+$--color-brand: #e72528;
+$--color-white: #fff;
+$--color-neutral: $--color-white;
+$--option-fill: transparent;
+$--fill: #333;
+$--box-shadow: none;
+$--box-shadow-lg: none;
+
+$--color-brand-80: rgba($--color-brand, 0.8);
+$--color-brand-40: rgba($--color-brand, 0.4);
+$--color-brand-20: rgba($--color-brand, 0.2);
+$--color-brand-16: rgba($--color-brand, 0.16);
+$--color-brand-12: rgba($--color-brand, 0.12);
+$--color-brand-8: rgba($--color-brand, 0.08);
+$--color-brand-4: rgba($--color-brand, 0.04);
+
+$--color-neutral-1: rgba($--color-neutral, 0.9);
+$--color-neutral-2: rgba($--color-neutral, 0.7);
+$--color-neutral-3: rgba($--color-neutral, 0.4);
+$--color-neutral-4: rgba($--color-neutral, 0.3);
+$--color-neutral-5: rgba($--color-neutral, 0.2);
+$--color-neutral-6: rgba($--color-neutral, 0.12);
+$--color-neutral-7: rgba($--color-neutral, 0.08);
+$--color-neutral-8: rgba($--color-neutral, 0.06);
+$--color-neutral-9: rgba($--color-neutral, 0.04);
+$--color-neutral-10: rgba($--color-neutral, 0.02);
+
+/* Button
+-------------------------- */
+$--button-primary-color: $--color-white;
+$--button-primary-color-hover: $--color-white;
+$--button-primary-color-pre: $--color-white;
+$--button-default-fill-hov: $--color-neutral-6;
+$--button-default-fill-pre: $--color-neutral-8;
+$--button-iconButton-color-hov: $--color-neutral-1;
+$--button-iconButton-fill-hov: $--color-neutral-7;
+$--button-iconButton-fill-pre: $--color-neutral-9;
+
+/* Input
+-------------------------- */
+$--input-border: 1px solid $--color-neutral-5;
+$--input-border-color-hov: $--color-neutral-4;
+
+/* Select
+-------------------------- */
+$--select-border-color-hover: $--color-neutral-4;
+$--select-dropdown-background: #333;
+$--option-fill-hov: $--color-neutral-7;
+$--option-fill-pre: $--color-neutral-9;
+$--option-selected: $--color-neutral-5;
+$--option-selected-color: $--color-white;
+$--option-disabled-background: $--color-neutral-9;
+
+/* Slide
+-------------------------- */
+$--slider-runway-background-color: $--color-neutral-5;
+$--slider-button-border-color: $--color-neutral-5;
+
+/* Pagination
+-------------------------- */
+$--pagination-fill: $--color-neutral-invert;
+$--pagination-active-fill: $--color-neutral-9;
+$--pagination-button-disabled-fill: $--color-neutral-8;
+
+/* DatePicker
+-------------------------- */
+$--datepicker-cell-hover-color: $--color-neutral-7;
+$--datepicker-cell-active-color: $--color-neutral-9;
+
+/* Table
+-------------------------- */
+$--table-text-color: $--color-neutral;
+$--table-tr-hover-background: $--color-neutral-7;
+$--table-tr-select-background: $--color-neutral-7;
+
+/* Menu
+-------------------------- */
+$--menu-item-hover-fill: $--color-neutral-6;
+$--menu-item-active-fill: $--color-neutral-9;
+
+/* Tree
+-------------------------- */
+$--tree-content-hover-fill: $--color-neutral-7;
+$--tree-content-pre-fill: $--color-neutral-9;
+
+/* Scrollbar
+-------------------------- */
+$--scrollbar-hover-background-color: $--color-neutral-4;
+$--scrollbar-active-background-color: $--color-neutral-3;
+
+/* Progress
+-------------------------- */
+$--progress-outer-fill: $--color-neutral-6;
+
+/* Popover
+-------------------------- */
+$--popover-fill: $--fill;
+
+/* Notification
+-------------------------- */
+$--notification-pagination-color: $--color-neutral-8;
+
+/* Tooltip
+-------------------------- */
+$--tooltip-fill: #3d3d3d;
+$--tooltip-light-fill: #3d3d3d;
+
+/* Collapse
+-------------------------- */
+$--collapse-header-fill: $--fill;
+$--collapse-content-fill: $--fill;
+
+/* Dialog
+-------------------------- */
+$--dialog-line-between: 1px solid $--color-neutral-6;
+$--dialog-header-fill: $--color-neutral-6;
+$--dialog-footer-fill: $--fill;
+
+@import './theme.scss';
+
+/* vuepress主题风格修改(不作为皮肤范围)
+-------------------------- */
+#app {
+  background-color: #171717;
+  color: #fff;
+}
+.code-box.demo-table table tr:nth-child(2n) {
+  background-color: $--fill !important;
+}
