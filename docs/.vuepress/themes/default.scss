@@ -1,0 +1,79 @@
+$--color-brand: #e72528 !default;
+
+.home .hero .action-button {
+  border-bottom: 1px solid $--color-brand;
+  background-color: $--color-brand;
+}
+.home .hero .action-button:hover {
+  background-color: $--color-brand;
+}
+
+.search-box input:focus {
+  border-color: $--color-brand;
+}
+a {
+  color: $--color-brand;
+  text-decoration: none;
+}
+.nav-links a:hover,
+.nav-links a.router-link-active {
+  color: $--color-brand;
+}
+.search-box .suggestion.focused a {
+  color: $--color-brand;
+}
+
+.dropdown-wrapper .nav-dropdown .dropdown-item a:hover {
+  color: $--color-brand;
+}
+.dropdown-wrapper .nav-dropdown .dropdown-item a.router-link-active {
+  color: $--color-brand;
+}
+
+.dropdown-wrapper .nav-dropdown .dropdown-item a.router-link-active::after {
+  border-left: 5px solid $--color-brand;
+}
+
+@media (min-width: 719px) {
+  .nav-item > a:not(.external):hover,
+  .nav-item > a:not(.external).router-link-active {
+    border-bottom: 2px solid $--color-brand;
+  }
+}
+
+a.sidebar-link:hover {
+  color: $--color-brand;
+}
+a.sidebar-link.active {
+  border-left-color: $--color-brand;
+  color: $--color-brand;
+}
+
+.sw-update-popup {
+  border: 1px solid $--color-brand;
+}
+
+#nprogress .bar {
+  background: $--color-brand;
+}
+#nprogress .peg {
+  box-shadow: 0 0 10px $--color-brand, 0 0 5px $--color-brand;
+}
+
+#nprogress .spinner-icon {
+  border-top-color: $--color-brand;
+  border-left-color: $--color-brand;
+}
+
+.custom-block.tip {
+  border-color: $--color-brand;
+  background-color: #f3f5f7;
+}
+
+.page .custom-block p a {
+  color:  $--color-brand;
+} 
+
+p a code {
+  color: $--color-brand;
+}

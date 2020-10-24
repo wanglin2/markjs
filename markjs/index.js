@@ -1,4 +1,4 @@
-import Observer from 'observer'
+import Observer from './src/observer'
 import utils from './src/utils'
 import editPlugin from './src/plugins/edit'
 
