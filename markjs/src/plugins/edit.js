@@ -35,7 +35,8 @@ import MarkItem from '../markItem'
     hoverActive: false,// 鼠标滑过对象时显示可激活状态，默认false
     readonly: false,// 是否只读，默认false
     single: false,// 是否编辑某个区域时隐藏其他所有区域，默认false
-    noCrossing: false// 是否禁止线段交叉
+    noCrossing: false,// 是否禁止线段交叉
+    dbClickRemovePoint: false// 是否允许双击顶点删除该顶点
 }
 
 属性
@@ -59,7 +60,8 @@ const defaultOpt = {
     hoverActive: false,
     readonly: false,
     single: false,
-    noCrossing: false
+    noCrossing: false,
+    dbClickRemovePoint: false
 }
 
 /** 
@@ -94,6 +96,8 @@ export default function EditPlugin(instance) {
     let createMarkItemOpt = null
     // 缓存点位数据
     let cachePointArr = null
+    // 标注对象递增id
+    let mId = 0
 
     /** 
      * javascript comment 
@@ -105,6 +109,7 @@ export default function EditPlugin(instance) {
         if (opt.value.length > 0) {
             opt.value.forEach((item) => {
                 let _markItem = new MarkItem(instance.ctx, {
+                    id: mId++,
                     ...opt,
                     ...item,
                     pointArr: item.pointArr.map((point) => {
@@ -145,6 +150,7 @@ export default function EditPlugin(instance) {
      */
     function createNewMarkItem(plusOpt = {}) {
         return new MarkItem(instance.ctx, {
+            id: mId++,
             ...opt,
             ...createMarkItemOpt,
             ...plusOpt
@@ -159,8 +165,8 @@ export default function EditPlugin(instance) {
      */
     function render() {
         instance.clearCanvas()
-        if (opt.single && curEditingMarkItem) {
-            curEditingMarkItem.render()
+        if (opt.single && (curEditingMarkItem || isCreateMarking)) {
+            curEditingMarkItem && curEditingMarkItem.render()
         } else {
             markItemList.forEach((item) => {
                 item.render()
@@ -206,6 +212,23 @@ export default function EditPlugin(instance) {
                 return item
             }
         }
+    }
+
+    /** 
+     * javascript comment 
+     * @Author: 王林25 
+     * @Date: 2020-11-02 17:48:18 
+     * @Desc: 找出所有包含该点的标注对象 
+     */
+    function checkInPathAllItems(x, y) {
+        let items = []
+        for (let i = markItemList.length - 1; i >= 0; i--) {
+            let item = markItemList[i]
+            if (item.checkInPath(x, y) || item.checkInPoints(x, y) !== -1) {
+                items.push(item) 
+            }
+        }
+        return items
     }
 
     /** 
@@ -365,8 +388,9 @@ export default function EditPlugin(instance) {
             if (curEditingMarkItem === item) {
                 setMarkEditItem(null)
             }
-            markItemList.splice(index, 1)
+            let deleteItem = markItemList.splice(index, 1)
             render()
+            instance.observer.publish('DELETE-MARKING-ITEM', deleteItem[0], index)
             return true
         }
         return false
@@ -382,6 +406,7 @@ export default function EditPlugin(instance) {
         markItemList = []
         setMarkEditItem(null)
         render()
+        instance.observer.publish('DELETE-ALL-MARKING-ITEM')
     }
 
     /** 
@@ -428,12 +453,19 @@ export default function EditPlugin(instance) {
                     setIsCreateMarking(false)
                 }
             }
-        } else if (!(opt.single && curEditingMarkItem) && (inPathItem = checkInPathItem(x, y))) { // 当前点击的位置存在标注对象
-            disableAllItemsEdit()
-            inPathItem.enable()
-            setMarkEditItem(inPathItem)
+        } else if (inPathItem = checkInPathItem(x, y)) { // 当前点击的位置存在标注对象
+            // !(opt.single && curEditingMarkItem) && 
+            if (!checkInPathAllItems(x, y).includes(curEditingMarkItem)) {
+                if (!opt.single || (opt.single && !curEditingMarkItem)) {
+                    disableAllItemsEdit()
+                    inPathItem.enable()
+                    setMarkEditItem(inPathItem)
+                }
+            }
         } else {// 点击空白处清除当前所有状态
-            reset()
+            if (!opt.single) {
+                reset()
+            }
         }
         render()
     })
@@ -449,18 +481,36 @@ export default function EditPlugin(instance) {
             return
         }
         if (curEditingMarkItem) {
-            // 端点数量不足三个
-            if (curEditingMarkItem.getPointLength() < 3) {
-                instance.observer.publish('NOT-ENOUGH-END-POINTS', curEditingMarkItem)
-            } else if (opt.noCrossing && curEditingMarkItem.checkEndLineSegmentCross()) {
-                instance.observer.publish('LINE-CROSS', curEditingMarkItem)
+            let {
+                x,
+                y
+            } = instance.toCanvasPos(e)
+            // 点击的是顶点
+            let inPointIndex = curEditingMarkItem.checkInPoints(x, y)
+            if (opt.dbClickRemovePoint && inPointIndex !== -1) {
+                if (curEditingMarkItem.getPointLength() > 3) {
+                    curEditingMarkItem.removePoint(inPointIndex)
+                    render()
+                } else {
+                    instance.observer.publish('NOT-ENOUGH-POINTS-REMOVE', curEditingMarkItem)
+                }
             } else {
-                setIsCreateMarking(false)
-                curEditingMarkItem.closePath()
-                curEditingMarkItem.disable()
-                setMarkEditItem(null)
-                render()
-                instance.observer.publish('COMPLETE-EDIT-ITEM', curEditingMarkItem, e)
+                // 端点数量不足三个
+                if (curEditingMarkItem.getPointLength() < 3) {
+                    instance.observer.publish('NOT-ENOUGH-END-POINTS', curEditingMarkItem)
+                } else if (opt.noCrossing && curEditingMarkItem.checkEndLineSegmentCross()) {
+                    instance.observer.publish('LINE-CROSS', curEditingMarkItem)
+                } else {
+                    if (isCreateMarking) {
+                        instance.observer.publish('COMPLETE-CREATE-ITEM', curEditingMarkItem, e)
+                    }
+                    setIsCreateMarking(false)
+                    curEditingMarkItem.closePath()
+                    curEditingMarkItem.disable()
+                    setMarkEditItem(null)
+                    render()
+                    instance.observer.publish('COMPLETE-EDIT-ITEM', curEditingMarkItem, e)
+                }
             }
         }
     })
@@ -520,7 +570,8 @@ export default function EditPlugin(instance) {
                 curEditingMarkItem.dragAll(ox, oy)
             }
             render()
-            instance.observer.publish('HOVER-ITEM', curEditingMarkItem, curEditingMarkItem, e)
+            let inPointIndex = curEditingMarkItem.checkInPoints(x, y)
+            instance.observer.publish('HOVER-ITEM', curEditingMarkItem, curEditingMarkItem, checkInPathAllItems(x, y), e, inPointIndex)
         } else if(!isCreateMarking){// 显示可选择状态
             let inPathItem = checkInPathItem(x, y)
             // 鼠标滑过显示可选择状态
@@ -530,7 +581,8 @@ export default function EditPlugin(instance) {
                 render()
             }
             if (inPathItem && inPathItem.isClosePath) {
-                instance.observer.publish('HOVER-ITEM', inPathItem, curEditingMarkItem, e)
+                let inPointIndex = inPathItem.checkInPoints(x, y)
+                instance.observer.publish('HOVER-ITEM', inPathItem, curEditingMarkItem, checkInPathAllItems(x, y), e, inPointIndex)
             }
         }
     })
@@ -571,6 +623,7 @@ export default function EditPlugin(instance) {
     instance._render = render
     instance._disableAllItemsHoverActive = disableAllItemsHoverActive
     instance._checkInPathItem = checkInPathItem
+    instance._checkInPathAllItems = checkInPathAllItems
     instance._getIsCreateIngMarkItem = getIsCreateIngMarkItem
 
     instance.getState = getState

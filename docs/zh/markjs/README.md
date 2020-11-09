@@ -1,4 +1,4 @@
-# Markjs 标注库
+# markjs 标注库
 
 一个简单的用来标注区域的库。
 
@@ -7,6 +7,8 @@
 其他内置插件包括：img（图片支持插件）、mouse（鼠标样式支持插件）、shape（特定形状支持插件）。此外，你也可以开发自己的插件，后面会详细介绍。
 
 ## 安装
+
+目前还未发布到npm，请下载代码进行使用。
 
 ```bash
 $ npm i markjs
@@ -35,8 +37,8 @@ import markjs from 'markjs'
       <el-button type="primary" @click="create1" :disabled="!editing1 || !!curEditMarkItem1">新增标注</el-button>
       <el-button type="primary" @click="exit1" :disabled="!isCreateMarking1">退出新增</el-button>
       <el-button type="primary" @click="getMarkData1">获取标注（控制台查看）</el-button>
-      <el-button type="primary" icon="el-icon-delete" @click="deleteItem1" :disabled="!curEditMarkItem1"></el-button>
-      <el-button type="primary" icon="el-icon-delete" @click="deleteAll1">删除全部</el-button>
+      <el-button type="primary" icon="h-icon-delete" @click="deleteItem1" :disabled="!curEditMarkItem1"></el-button>
+      <el-button type="primary" icon="h-icon-delete" @click="deleteAll1">删除全部</el-button>
     </div>
   </code-box>
 </template>
@@ -48,8 +50,8 @@ import markjs from 'markjs'
     <el-button type="primary" @click="create1" :disabled="!editing1 || !!curEditMarkItem1">新增标注</el-button>
     <el-button type="primary" @click="exit1" :disabled="!isCreateMarking1">退出新增</el-button>
     <el-button type="primary" @click="getMarkData1">获取标注（控制台查看）</el-button>
-    <el-button type="primary" icon="el-icon-delete" @click="deleteItem1" :disabled="!curEditMarkItem1"></el-button>
-    <el-button type="primary" icon="el-icon-delete" @click="deleteAll1">删除全部</el-button>
+    <el-button type="primary" icon="h-icon-delete" @click="deleteItem1" :disabled="!curEditMarkItem1"></el-button>
+    <el-button type="primary" icon="h-icon-delete" @click="deleteAll1">删除全部</el-button>
   </div>
 </template>
 
@@ -129,8 +131,8 @@ export default {
       <el-button type="primary" @click="create2" :disabled="!editing2 || !!curEditMarkItem2">新增标注</el-button>
       <el-button type="primary" @click="exit2" :disabled="!isCreateMarking2">退出新增</el-button>
       <el-button type="primary" @click="getMarkData2">获取标注（控制台查看）</el-button>
-      <el-button type="primary" icon="el-icon-delete" @click="deleteItem2" :disabled="!curEditMarkItem2"></el-button>
-      <el-button type="primary" icon="el-icon-delete" @click="deleteAll2">删除全部</el-button>
+      <el-button type="primary" icon="h-icon-delete" @click="deleteItem2" :disabled="!curEditMarkItem2"></el-button>
+      <el-button type="primary" icon="h-icon-delete" @click="deleteAll2">删除全部</el-button>
     </div>
   </code-box>
 </template>
@@ -142,8 +144,8 @@ export default {
     <el-button type="primary" @click="create2" :disabled="!editing2 || !!curEditMarkItem2">新增标注</el-button>
     <el-button type="primary" @click="exit2" :disabled="!isCreateMarking2">退出新增</el-button>
     <el-button type="primary" @click="getMarkData2">获取标注（控制台查看）</el-button>
-    <el-button type="primary" icon="el-icon-delete" @click="deleteItem2" :disabled="!curEditMarkItem2"></el-button>
-    <el-button type="primary" icon="el-icon-delete" @click="deleteAll2">删除全部</el-button>
+    <el-button type="primary" icon="h-icon-delete" @click="deleteItem2" :disabled="!curEditMarkItem2"></el-button>
+    <el-button type="primary" icon="h-icon-delete" @click="deleteAll2">删除全部</el-button>
   </div>
 </template>
 
@@ -168,7 +170,7 @@ export default {
     mark2 = new Markjs({
       el: this.$refs.markBox2,
       hoverActive: true,
-      img: require('../../.vuepress/public/u7602.png'),
+      img: require('../../../.vuepress/public/u7602.png'),
       elBg: '#000',
       max: 3,
       noCrossing: true
@@ -234,8 +236,8 @@ export default {
       <el-button type="primary" @click="createShape3" :disabled="!editing3 || !!curEditMarkItem3">创建形状</el-button>
       <el-button type="primary" @click="exit3" :disabled="!isCreateMarking3">退出新增</el-button>
       <el-button type="primary" @click="getMarkData3">获取标注（控制台查看）</el-button>
-      <el-button type="primary" icon="el-icon-delete" @click="deleteItem3" :disabled="!curEditMarkItem3"></el-button>
-      <el-button type="primary" icon="el-icon-delete" @click="deleteAll3">删除全部</el-button>
+      <el-button type="primary" icon="h-icon-delete" @click="deleteItem3" :disabled="!curEditMarkItem3"></el-button>
+      <el-button type="primary" icon="h-icon-delete" @click="deleteAll3">删除全部</el-button>
     </div>
   </code-box>
 </template>
@@ -247,8 +249,8 @@ export default {
   <el-button type="primary" @click="createShape3" :disabled="!editing3 || !!curEditMarkItem3">创建形状</el-button>
   <el-button type="primary" @click="exit3" :disabled="!isCreateMarking3">退出新增</el-button>
   <el-button type="primary" @click="getMarkData3">获取标注（控制台查看）</el-button>
-  <el-button type="primary" icon="el-icon-delete" @click="deleteItem3" :disabled="!curEditMarkItem3"></el-button>
-  <el-button type="primary" icon="el-icon-delete" @click="deleteAll3">删除全部</el-button>
+  <el-button type="primary" icon="h-icon-delete" @click="deleteItem3" :disabled="!curEditMarkItem3"></el-button>
+  <el-button type="primary" icon="h-icon-delete" @click="deleteAll3">删除全部</el-button>
 </div>  
 </template>
 
@@ -328,8 +330,8 @@ export default {
       <el-button type="primary" @click="create4" :disabled="!editing4 || !!curEditMarkItem4">新增标注</el-button>
       <el-button type="primary" @click="exit4" :disabled="!isCreateMarking4">退出新增</el-button>
       <el-button type="primary" @click="getMarkData4">获取标注（控制台查看）</el-button>
-      <el-button type="primary" icon="el-icon-delete" @click="deleteItem4" :disabled="!curEditMarkItem4"></el-button>
-      <el-button type="primary" icon="el-icon-delete" @click="deleteAll4">删除全部</el-button>
+      <el-button type="primary" icon="h-icon-delete" @click="deleteItem4" :disabled="!curEditMarkItem4"></el-button>
+      <el-button type="primary" icon="h-icon-delete" @click="deleteAll4">删除全部</el-button>
     </div>
   </code-box>
 </template>
@@ -341,8 +343,8 @@ export default {
     <el-button type="primary" @click="create4" :disabled="!editing4 || !!curEditMarkItem4">新增标注</el-button>
     <el-button type="primary" @click="exit4" :disabled="!isCreateMarking4">退出新增</el-button>
     <el-button type="primary" @click="getMarkData4">获取标注（控制台查看）</el-button>
-    <el-button type="primary" icon="el-icon-delete" @click="deleteItem4" :disabled="!curEditMarkItem4"></el-button>
-    <el-button type="primary" icon="el-icon-delete" @click="deleteAll4">删除全部</el-button>
+    <el-button type="primary" icon="h-icon-delete" @click="deleteItem4" :disabled="!curEditMarkItem4"></el-button>
+    <el-button type="primary" icon="h-icon-delete" @click="deleteAll4">删除全部</el-button>
   </div>
 </template>
 
@@ -425,8 +427,8 @@ export default {
       <el-button type="primary" @click="createShape5" :disabled="!editing5 || !!curEditMarkItem5">创建形状</el-button>
       <el-button type="primary" @click="exit5" :disabled="!isCreateMarking5">退出新增</el-button>
       <el-button type="primary" @click="getMarkData5">获取标注（控制台查看）</el-button>
-      <el-button type="primary" icon="el-icon-delete" @click="deleteItem5" :disabled="!curEditMarkItem5"></el-button>
-      <el-button type="primary" icon="el-icon-delete" @click="deleteAll5">删除全部</el-button>
+      <el-button type="primary" icon="h-icon-delete" @click="deleteItem5" :disabled="!curEditMarkItem5"></el-button>
+      <el-button type="primary" icon="h-icon-delete" @click="deleteAll5">删除全部</el-button>
     </div>
   </code-box>
 </template>
@@ -520,6 +522,7 @@ let mark = new Markjs(opt)
 | MOUSEENTER | 鼠标移入画布区域内事件 | e（事件对象） |
 | MOUSELEAVE | 鼠标移出画布区域内事件 | e（事件对象） |
 | WINDOW-CLICK | window窗口的单击事件 | e（事件对象） |
+| DESTORY | 实例销毁事件 |  |
 
 #### mark实例方法
 
@@ -540,6 +543,8 @@ let mark = new Markjs(opt)
 | 参数  | 说明                               | 类型   | 可选值 | 默认值 |
 | ----- | ---------------------------------- | ------ | ------ | ------ |
 | value | 回显的标注区域数据，对象数组，对象的字段见表3-1 | Array | —      | [] |
+| lineType | 线段类型 | line（普通线段）、borderLine（带边框的线段）、custom（自定义绘图方法），带边框的线段实现方式为绘制叠加的上下两条线段，下面的那条宽度较宽，上面的宽度较窄，当颜色设置的不一样时则会出现线段的样式，上面较窄的线段的样式同样见表3-2 | —      | line |
+| customRenderLine | 自定义绘制线段的方法，当lineType为custom时需要提供，回调参数为当前标注对象的实例 |  | —      |  |
 | strokeStyle | 标注区域轮廓样式，对象格式，字段见表3-2 | Object | —      |  |
 | pointStyle | 标注区域顶点样式，对象格式，字段见表3-3 | Object | —      |  |
 | fillColor | 标注区域填充颜色 | String | —      | rgba(0, 136, 255, 0.5) |
@@ -550,8 +555,9 @@ let mark = new Markjs(opt)
 | max | 允许创建的标注区域数量限制，默认-1，不限制 | Number | —      | -1 |
 | hoverActive | 鼠标滑过对象时显示可激活状态 | Boolean | —      | false |
 | readonly | 是否只读，不允许编辑，可调用方法开启编辑状态 | Boolean | —      | false |
-| single | 是否激活编辑某个区域时隐藏其他所有区域 | Boolean | —      | false |
+| single | 是否激活编辑某个区域时隐藏其他所有区域，注意这两种在交互细节上会有一点区别 | Boolean | —      | false |
 | noCrossing | 是否禁止线段交叉 | Boolean | —      | false |
+| dbClickRemovePoint | 是否允许双击顶点删除该顶点 | Boolean | —      | false |
 
 #### 表3-1 标注区域对象格式
 
@@ -570,6 +576,10 @@ let mark = new Markjs(opt)
 | lineWidth | 线条宽度 | Number | —      | 3 |
 | strokeColor | 线条颜色 | String | —      | rgba(0, 136, 255, 1) |
 | lineJoin | 线条末端样式 | String | bevel（斜角）、round（圆角）、miter（尖角） | round |
+| frontLineWidth | 当lineType为borderLine时配置，线条宽度 | Number | —      | 3 |
+| frontStrokeColor | 当lineType为borderLine时配置，线条颜色 | String | —      | rgba(0, 136, 255, 1) |
+| frontLineJoin | 当lineType为borderLine时配置，线条末端样式 | String | bevel（斜角）、round（圆角）、miter（尖角） | round |
+
 
 #### 表3-3 pointStyle样式对象格式
 
@@ -584,11 +594,15 @@ let mark = new Markjs(opt)
 | 事件  | 说明                               | 回调函数参数 |
 | ----- | ---------------------------------- | ------ |
 | CURRENT-MARK-ITEM-CHANGE | 当前激活标注对象变化时触发 | item（当前激活的标注对象） |
-| HOVER-ITEM | 鼠标移到某个标注对象区域内时触发 | inPathItem（当前移入的标注对象）, curEditingMarkItem（当前激活的标注对象）, e（事件对象） |
+| HOVER-ITEM | 鼠标移到某个标注对象区域内时触发 | inPathItem（当前移入的标注对象）, curEditingMarkItem（当前激活的标注对象），allInItems（路径包含当前该点的所有标注对象）, e（事件对象），inPointIndex（移到了当前移入的标注对象的某个顶点的索引，如果不在顶点上为-1） |
 | COMPLETE-EDIT-ITEM | 双击完成绘制时触发 | curEditingMarkItem（当前激活的标注对象）, e（事件对象） |
 | IS-CREATE-MARKING-CHANGE | 当前是否在创建标注中的状态变化时触发，只在标注仍未闭合时的创建中触发，不包括闭合后的编辑 | state（状态） |
+| DELETE-MARKING-ITEM | 删除某个标注时触发 | item（删除的那个标注对象），index（删除的标注的索引） |
+| DELETE-ALL-MARKING-ITEM | 删除全部标注时触发 |  |
+| COMPLETE-CREATE-ITEM | 新标注创建完成时触发 | curEditingMarkItem（当前创建完成的标注对象）, e（事件对象） |
 | LINE-CROSS | 检测到线段交叉时触发 | curEditingMarkItem（当前激活的标注对象） |
 | NOT-ENOUGH-END-POINTS | 双击闭合路径时如果顶点数量不足3个时触发 | curEditingMarkItem（当前激活的标注对象） |
+| NOT-ENOUGH-POINTS-REMOVE | 双击删除顶点时如果顶点数量不足3个时触发 | curEditingMarkItem（当前激活的标注对象） |
 | COUNT-LIMIT | 创建新标注时如果数量超出限制时触发 | curEditingMarkItem（当前激活的标注对象） |
 
 #### 实例方法
@@ -665,12 +679,13 @@ Markjs.use(mousePlugin)
 | showPen | 否显示鼠标指针画笔 | Boolean | —      | true |
 | penImg | 自定义鼠标指针图片地址 | String | —      |  |
 
-#### 表5-1 getState返回的状态对象格式
+#### 表5-1 提示信息cursorTips对象格式
 
 | 字段名  | 说明                               | 默认值 |
 | ----- | ---------------------------------- | ------ |
 | START | 正在创建一个新标注对象时未闭合时鼠标显示的文字 | 单击进行绘制，双击结束操作 |
 | EDITING | 移入当前激活对象区域内时鼠标显示的文字 | 拖曳移动节点或区域，双击结束操作 |
+| EDITING_POINT | 移入当前激活对象区域内的顶点时鼠标显示的文字，当dbClickRemovePoint设为true才有效 | 拖拽移动节点，修改区域边界，双击删除节点 |
 | HOVER | 当前没有激活对象时移入某个标注对象时鼠标显示的文字 | 单击激活该区域并进入编辑状态 |
 
 ### 6.特定形状插件shape
@@ -698,7 +713,35 @@ Markjs.use(shapePlugin)
 | create | 当调用`createShapeMarkItem`方法创建新的特定对象时会调用该方法来初始显示一个指定形状，需要返回一个`pointArr`数组，字段可见表3-1里的`pointArr`，所以简单来说，你需要返回一个形状的初始坐标数组 | canvasEleRectInfo（画布区域的尺寸信息） |
 | update | 当鼠标拖动某个端点时会调用该方法，你需要在该方法内更新当前标注对象的`pointArr`坐标数据来更新维护当前特定形状 | instance（当前标注对象）, x（当前鼠标指针相对于画布的x坐标）, y（当前鼠标指针相对于画布的y坐标） |
 
-### 7.插件开发
+### 7.序号插件order
+
+序号插件会给某个标注区域显示一个编号。
+
+![](../../../.vuepress/public/Snipaste_2020-11-03_11-11-13.jpg)
+
+```js
+import Markjs from 'markjs'
+import orderPlugin from 'markjs/src/plugins/order'
+Markjs.use(orderPlugin)
+```
+
+#### 入参
+
+| 参数  | 说明                               | 类型   | 可选值 | 默认值 |
+| ----- | ---------------------------------- | ------ | ------ | ------ |
+| order | 配置参数对象，字段见表7-1 | Object | —      |  |
+
+#### 表7-1 order对象字段格式
+
+| 字段名  | 说明                               | 类型   | 可选值 | 默认值 |
+| ----- | ---------------------------------- | ------ | ------ | ------ |
+| color | 序号颜色 | String |  | #fff |
+| background | 序号背景颜色 | String |  | #2196F3 |
+| fontSize | 序号字号 | Number |  | 24 |
+| width | 序号的宽高 | Number |  | 48 |
+| class | 自定义css类名，设置了类名内部就只会设置基本的定位属性，其他样式属性需要你自己来设置 | String |  |  |
+
+### 8.插件开发
 
 如果以上仍然不能满足你的要求的话那么你可以考虑开发自己的插件，如果是的话你可能首先看一下源码，特别是内置的插件源码，可以参考来进行开发，幸运的是源码并不复杂，甚至还有点简单。
 
@@ -782,7 +825,7 @@ export default {
       mark2 = new Markjs({
         el: this.$refs.markBox2,
         hoverActive: true,
-        img: require('../../.vuepress/public/u7602.png'),
+        img: require('../../../.vuepress/public/u7602.png'),
         elBg: '#000',
         max: 3,
         noCrossing: true
