@@ -4,7 +4,8 @@
     cursorTips: {// 提示信息
         START: '单击进行绘制，双击结束操作',
         EDITING: '拖曳移动节点或区域，双击结束操作',
-        HOVER: '单击激活该区域并进入编辑状态'
+        HOVER: '单击激活该区域并进入编辑状态',
+        EDITING_POINT: '拖拽移动节点，修改区域边界，双击删除节点'
     },
     showPen: true,// 是否显示笔
     penImg: ''// 鼠标指针图片
@@ -24,7 +25,8 @@ const defaultOpt = {
     cursorTips: {
         START: '单击进行绘制，双击结束操作',
         EDITING: '拖曳移动节点或区域，双击结束操作',
-        HOVER: '单击激活该区域并进入编辑状态'
+        HOVER: '单击激活该区域并进入编辑状态',
+        EDITING_POINT: '拖拽移动节点，修改区域边界，双击删除节点'
     }
 }
 
@@ -189,16 +191,45 @@ export default function mousePlugin(instance){
      * @Date: 2020-10-16 13:50:30 
      * @Desc: 鼠标移到某个区域内 
      */
-    instance.on('HOVER-ITEM', (item, curItem, e) => {
-        if (!curItem || (curItem.isClosePath && !instance.opt.single)) {
+    instance.on('HOVER-ITEM', (item, curItem, allInItems, e, inPointIndex) => {
+        if (!curItem || curItem.isClosePath) {
             isHoverInItem = true
             setElePos(e.clientX + 30, e.clientY)
-            if (item.isEditing) {
-                setEleText(tips.EDITING)
+            if (instance.opt.single) {
+                if (curItem && allInItems.includes(curItem)) {
+                    if (opt.dbClickRemovePoint && inPointIndex !== -1) {
+                        setEleText(tips.EDITING_POINT)
+                    } else {
+                        setEleText(tips.EDITING)
+                    }
+                    showEle()
+                } else {
+                    if (!curItem) {
+                        setEleText(tips.HOVER)
+                        showEle()
+                    } else {
+                        setEleText()
+                        hideEle()
+                    }
+                }
             } else {
-                setEleText(tips.HOVER)
+                if (curItem && allInItems.includes(curItem)) {
+                    if (opt.dbClickRemovePoint && inPointIndex !== -1) {
+                        setEleText(tips.EDITING_POINT)
+                    } else {
+                        setEleText(tips.EDITING)
+                    }
+                    showEle()
+                } else {
+                    if (item.isEditing) {
+                        setEleText(tips.EDITING)
+                        showEle()
+                    } else {
+                        setEleText(tips.HOVER)
+                        showEle()
+                    }
+                }
             }
-            showEle()
         }
     })
 

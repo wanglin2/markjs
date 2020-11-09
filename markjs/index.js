@@ -1,4 +1,4 @@
-import Observer from './src/observer'
+import Observer from 'observer'
 import utils from './src/utils'
 import editPlugin from './src/plugins/edit'
 
@@ -163,6 +163,8 @@ class Markjs {
      */
     destroy() {
         this.unbindEvent()
+        this.el.removeChild(this.canvasEle)
+        this.observer.publish('DESTORY')
         this.observer.clearAll()
     }
 

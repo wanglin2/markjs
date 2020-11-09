@@ -4,10 +4,16 @@ import utils from './utils'
 // 配置
 {
     data: null,// 附加数据，可以添加你需要的任何数据
+    lineType: 'line',线段类型，line（普通线段）、borderLine（带边框的线段）、custom（自定义绘图方法）
+    customRenderLine(this){},// 自定义绘制线段的方法
     strokeStyle: {// 标注轮廓样式
         lineWidth: 3,
         strokeColor: 'rgba(0, 136, 255, 1)',
-        lineJoin: 'round'
+        lineJoin: 'round',
+        // 如果lineType为borderLine，需要配置一下三个属性
+        frontLineWidth: 3,
+        frontStrokeColor: 'rgba(0, 136, 255, 1)',
+        frontLineJoin: 'round'
     },
     fillColor: 'rgba(0, 136, 255, 0.5)',// 标注区域填充颜色
     pointStyle: {// 端点的样式
@@ -35,7 +41,10 @@ import utils from './utils'
 const defaultStrokeStyle = {
     lineWidth: 3,
     strokeColor: 'rgba(0, 136, 255, 1)',
-    lineJoin: 'round'
+    lineJoin: 'round',
+    frontLineWidth: 3,
+    frontStrokeColor: 'rgba(0, 136, 255, 1)',
+    frontLineJoin: 'round'
 }
 // 默认填充样式
 const defaultFillColor = 'rgba(0, 136, 255, 0.5)'
@@ -49,7 +58,8 @@ const defaultPointStyle = {
 const defaultOpt = {
     showPoint: true,
     pointType: 'square',
-    pointWidth: 3
+    pointWidth: 3,
+    lineType: 'line'
 }
 
 /** 
@@ -154,6 +164,16 @@ export default class MarkItem {
     /** 
      * javascript comment 
      * @Author: 王林25 
+     * @Date: 2020-11-05 10:41:36 
+     * @Desc: 删除某个顶点 
+     */
+    removePoint(index) {
+        this.pointArr.splice(index, 1)
+    }
+
+    /** 
+     * javascript comment 
+     * @Author: 王林25 
      * @Date: 2020-09-27 15:57:47 
      * @Desc: 渲染 
      */
@@ -163,7 +183,19 @@ export default class MarkItem {
             this.renderArea()
         }
         // 绘制线段
-        this.renderLines(this.strokeStyle)
+        if (this.opt.lineType === 'custom') {
+            this.opt.customRenderLine && this.opt.customRenderLine(this)
+        } else if (this.opt.lineType === 'borderLine') {
+            this.renderLines(this.strokeStyle)
+            this.renderLines({
+                ...this.strokeStyle,
+                lineWidth: this.strokeStyle.frontLineWidth,
+                strokeColor: this.strokeStyle.frontStrokeColor,
+                lineJoin: this.strokeStyle.frontLineJoin
+            })
+        } else {
+            this.renderLines(this.strokeStyle)
+        }
         // 绘制端点
         this.renderPoints()
     }

@@ -8,7 +8,5 @@
   },
   "author": "wanglin25",
   "license": "ISC",
-  "dependencies": {
-    "observer": "^1.0.0"
-  }
+  "dependencies": {}
 }

@@ -46,6 +46,8 @@ export default function ImgPlugin(instance) {
     let elRectInfo = instance.elRectInfo
     // 画布元素
     let canvasEle = instance.canvasEle
+    // 图片要素canvas
+    let imgCanvasEle = null
     // 图片对象
     let image = null
     // 图片实际宽高
@@ -56,6 +58,16 @@ export default function ImgPlugin(instance) {
     let actEditHeight = 0
     // 最终渲染宽高与图片实际宽高的比例
     let ratio = 0
+
+    /** 
+     * javascript comment 
+     * @Author: 王林25 
+     * @Date: 2020-11-03 15:33:39 
+     * @Desc: 销毁 
+     */
+    instance.on('DESTORY', () => {
+        imgCanvasEle && instance.el.removeChild(imgCanvasEle)
+    })
 
     /** 
      * javascript comment 
@@ -166,16 +178,16 @@ export default function ImgPlugin(instance) {
      * @Desc: 绘制图片 
      */
     function drawImg () {
-        let canvasEle = document.createElement('canvas')
+        imgCanvasEle = document.createElement('canvas')
         let style = {
             zIndex: 1
         }
         if (opt.bg) {
             style.background = opt.bg
         }
-        setCanvasStyle(canvasEle, style)
-        instance.el.appendChild(canvasEle)
-        let ctx = canvasEle.getContext('2d')
+        setCanvasStyle(imgCanvasEle, style)
+        instance.el.appendChild(imgCanvasEle)
+        let ctx = imgCanvasEle.getContext('2d')
         ctx.drawImage(image, 0, 0, actEditWidth, actEditHeight)
     }
 
