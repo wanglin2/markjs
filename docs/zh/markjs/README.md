@@ -170,7 +170,7 @@ export default {
     mark2 = new Markjs({
       el: this.$refs.markBox2,
       hoverActive: true,
-      img: require('../../../.vuepress/public/u7602.png'),
+      img: require('../../.vuepress/public/u7602.png'),
       elBg: '#000',
       max: 3,
       noCrossing: true
@@ -717,7 +717,7 @@ Markjs.use(shapePlugin)
 
 序号插件会给某个标注区域显示一个编号。
 
-![](../../../.vuepress/public/Snipaste_2020-11-03_11-11-13.jpg)
+![](../../.vuepress/public/Snipaste_2020-11-03_11-11-13.jpg)
 
 ```js
 import Markjs from 'markjs'
@@ -825,7 +825,7 @@ export default {
       mark2 = new Markjs({
         el: this.$refs.markBox2,
         hoverActive: true,
-        img: require('../../../.vuepress/public/u7602.png'),
+        img: require('../../.vuepress/public/u7602.png'),
         elBg: '#000',
         max: 3,
         noCrossing: true
