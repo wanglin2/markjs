@@ -20,6 +20,129 @@ $ npm i markjs
 import markjs from 'markjs'
 ```
 
+## 推荐用法
+
+<template>
+  <code-box title="推荐用法" description="推荐使用该示例的配置项，区域模式，带吸附功能，可删除新增节点。">
+    <div class="container">
+      <div class="markBox" ref="markBox0"></div>
+      <el-button type="primary" @click="create0" :disabled="!editing0 || !!curEditMarkItem0">新增标注</el-button>
+      <el-button type="primary" @click="exit0" :disabled="!isCreateMarking0">退出新增</el-button>
+      <el-button type="primary" @click="getMarkData0">获取标注（控制台查看）</el-button>
+      <el-button type="primary" icon="h-icon-delete" @click="deleteItem1" :disabled="!curEditMarkItem0"></el-button>
+      <el-button type="primary" icon="h-icon-delete" @click="deleteAll0">删除全部</el-button>
+    </div>
+  </code-box>
+</template>
+
+```vue
+<template>
+  <div class="container">
+    <div class="markBox" ref="markBox0"></div>
+    <el-button type="primary" @click="create0" :disabled="!editing0 || !!curEditMarkItem0">新增标注</el-button>
+    <el-button type="primary" @click="exit0" :disabled="!isCreateMarking0">退出新增</el-button>
+    <el-button type="primary" @click="getMarkData0">获取标注（控制台查看）</el-button>
+    <el-button type="primary" icon="h-icon-delete" @click="deleteItem1" :disabled="!curEditMarkItem0"></el-button>
+    <el-button type="primary" icon="h-icon-delete" @click="deleteAll0">删除全部</el-button>
+  </div>
+</template>
+
+<script>
+import Markjs from 'markjs'
+import mousePlugin from 'markjs/src/plugins/mouse'
+Markjs.use(mousePlugin)
+
+// 推荐用法
+let mark0 = null
+
+export default {
+  data () {
+    return {
+      // 推荐用法
+      editing0: true,
+      curEditMarkItem0: null,
+      isCreateMarking0: false
+    }
+  },
+  mounted () {
+    setTimeout(() => {
+      // 推荐用法
+      mark0 = new Markjs({
+        el: this.$refs.markBox0,
+        hoverActive: false,
+        dbClickActive: true,
+        noCrossing: true,
+        enableAddPoint: true,
+        area: true,
+        showPen: false,
+        singleClickComplete: false,
+        pointType: 'circle',
+        pointWidth: 2,
+        pointStyle: {
+          lineWidth: 2,
+          strokeColor: '#0088FF',
+          fillColor: '#fff'
+        },
+        lineType: 'borderLine',
+        strokeStyle: {
+          lineWidth: 5,
+          strokeColor: 'rgba(255, 255, 255, 0.7)',
+          frontLineWidth: 3,
+          frontStrokeColor: '#2196F3'
+        },
+        fillColor: 'rgba(0,136,255,0.30)',
+        dbClickRemovePoint: true
+      })
+      mark0.on('CURRENT-MARK-ITEM-CHANGE', (item) => {
+        this.curEditMarkItem0 = item
+      })
+      mark0.on('IS-CREATE-MARKING-CHANGE', (state) =>{
+        this.isCreateMarking0 = state
+      })
+      mark0.on('NOT-ENOUGH-END-POINTS', (state) =>{
+        this.$message.warning('至少需要绘制三个端点')
+      })
+      mark0.on('LINE-CROSS', (item) => {
+        this.$message.warning('线段不允许交叉')
+      })
+      mark0.on('NOT-ENOUGH-POINTS-REMOVE', (item) => {
+        this.$message.warning('至少需要三个端点')
+      })
+    })
+  },
+  methods: {
+    // 推荐用法
+    getMarkData0() {
+      console.log(mark0.getMarkData(), JSON.stringify(mark0.getMarkData()))
+    },
+    deleteItem0() {
+      mark0.deleteMarkItem(this.curEditMarkItem0)
+    },
+    deleteAll0() {
+      mark0.deleteAllMarkItem()
+    },
+    create0() {
+      mark0.createMarkItem()
+    },
+    exit0() {
+      mark0.exitCreate()
+    }
+  }
+}
+</script>
+
+<style lang="less" scoped>
+.container {  
+  .markBox {
+    width: 600px;
+    height: 400px;
+    background-color: #f5f5f5;
+    margin-bottom: 10px;
+  }
+}
+</style>
+```
+
 ## 基础用法
 
 1.引入`markjs`，再按需引入你需要的插件，因为文档框架限制，所以所有示例都一次性引入所有内置插件。
@@ -556,8 +679,14 @@ let mark = new Markjs(opt)
 | hoverActive | 鼠标滑过对象时显示可激活状态 | Boolean | —      | false |
 | readonly | 是否只读，不允许编辑，可调用方法开启编辑状态 | Boolean | —      | false |
 | single | 是否激活编辑某个区域时隐藏其他所有区域，注意这两种在交互细节上会有一点区别 | Boolean | —      | false |
-| noCrossing | 是否禁止线段交叉 | Boolean | —      | false |
+| noCrossing | 是否禁止某个标注对象自身线段交叉，和其他标注对象还是可以交叉的 | Boolean | —      | false |
 | dbClickRemovePoint | 是否允许双击顶点删除该顶点 | Boolean | —      | false |
+| area | 区域编辑模式，即从始至终都会显示为一个闭合的图形 | Boolean | —      | false |
+| adsorbent | 是否开启吸附效果 | Boolean | —      | true |
+| adsorbentNum | 吸附的距离，即距离小于等于该值时会进行吸附，单位px | Number | —      | 5 |
+| adsorbentLine | 是否允许吸附到线段上 | Boolean | —      | true |
+| dbClickActive | 是否双击激活标注对象，默认为单击激活 | Boolean | —      | false |
+| singleClickComplete | 默认情况下，双击结束编辑，如果该值设为true，除了新增创建期间外的编辑下如果单击了其他区域也可以结束编辑，设为false，即只允许双击结束编辑 | Boolean | —      | true |
 
 #### 表3-1 标注区域对象格式
 
@@ -765,6 +894,8 @@ Markjs.use(shapePlugin)
 Markjs.use(mousePlugin)
 console.log(Markjs.pluginList)
 
+// 推荐用法
+let mark0 = null
 // 基础用法
 let mark1 = null
 // 标注图片
@@ -778,6 +909,11 @@ let mark5 = null
 export default {
   data () {
     return {
+      // 推荐用法
+      editing0: true,
+      curEditMarkItem0: null,
+      isCreateMarking0: false,
+
       // 基础用法
       editing1: true,
       curEditMarkItem1: null,
@@ -806,6 +942,49 @@ export default {
   },
   mounted () {
     setTimeout(() => {
+      // 推荐用法
+      mark0 = new Markjs({
+        el: this.$refs.markBox0,
+        hoverActive: false,
+        dbClickActive: true,
+        noCrossing: true,
+        enableAddPoint: true,
+        area: true,
+        showPen: false,
+        singleClickComplete: false,
+        pointType: 'circle',
+        pointWidth: 2,
+        pointStyle: {
+          lineWidth: 2,
+          strokeColor: '#0088FF',
+          fillColor: '#fff'
+        },
+        lineType: 'borderLine',
+        strokeStyle: {
+          lineWidth: 5,
+          strokeColor: 'rgba(255, 255, 255, 0.7)',
+          frontLineWidth: 3,
+          frontStrokeColor: '#2196F3'
+        },
+        fillColor: 'rgba(0,136,255,0.30)',
+        dbClickRemovePoint: true
+      })
+      mark0.on('CURRENT-MARK-ITEM-CHANGE', (item) => {
+        this.curEditMarkItem0 = item
+      })
+      mark0.on('IS-CREATE-MARKING-CHANGE', (state) =>{
+        this.isCreateMarking0 = state
+      })
+      mark0.on('NOT-ENOUGH-END-POINTS', (state) =>{
+        this.$message.warning('至少需要绘制三个端点')
+      })
+      mark0.on('LINE-CROSS', (item) => {
+        this.$message.warning('线段不允许交叉')
+      })
+      mark0.on('NOT-ENOUGH-POINTS-REMOVE', (item) => {
+        this.$message.warning('至少需要三个端点')
+      })
+
       // 基础用法
       mark1 = new Markjs({
         el: this.$refs.markBox1,
@@ -917,6 +1096,24 @@ export default {
     }, 1000)
   },
   methods: {
+    // 推荐用法
+    // 基础用法
+    getMarkData0() {
+      console.log(mark0.getMarkData(), JSON.stringify(mark0.getMarkData()))
+    },
+    deleteItem0() {
+      mark0.deleteMarkItem(this.curEditMarkItem0)
+    },
+    deleteAll0() {
+      mark0.deleteAllMarkItem()
+    },
+    create0() {
+      mark0.createMarkItem()
+    },
+    exit0() {
+      mark0.exitCreate()
+    },
+
     // 基础用法
     getMarkData1() {
       console.log(mark1.getMarkData(), JSON.stringify(mark1.getMarkData()))

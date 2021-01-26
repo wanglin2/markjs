@@ -113,6 +113,12 @@ export default class MarkItem {
         this.dragCachePointArr = []
         // 鼠标滑过显示可选择状态
         this.hoverActive = false
+        // 是否是闭合绘制模式
+        this.area = opt.area || false
+        // 始终闭合绘制模式下的当前鼠标移动到的非固定点
+        this.areaToPointPos = null
+        // 是否允许新增节点，仅在闭合情况下的编辑期间
+        this.enableAddPoint = opt.enableAddPoint || false
     }
 
     /** 
@@ -123,6 +129,8 @@ export default class MarkItem {
      */
     enable() {
         this.isEditing = true
+        // 插入虚拟顶点
+        this.insertFictitiousPoints()
     }
 
     /** 
@@ -133,6 +141,20 @@ export default class MarkItem {
      */
     disable() {
         this.isEditing = false
+        // 移除虚拟顶点
+        this.removeFictitiousPoints()
+    }
+
+    /** 
+     * javascript comment 
+     * @Author: 王林25 
+     * @Date: 2021-01-25 14:45:32 
+     * @Desc: 获取真实顶点数组 
+     */
+    getTruePointArr() {
+        return this.pointArr.filter((item) => {
+            return !item.fictitious
+        })
     }
 
     /** 
@@ -142,7 +164,7 @@ export default class MarkItem {
      * @Desc: 端点数量 
      */
     getPointLength() {
-        return this.pointArr.length
+        return this.getTruePointArr().length
     }
 
     /** 
@@ -168,7 +190,27 @@ export default class MarkItem {
      * @Desc: 删除某个顶点 
      */
     removePoint(index) {
+        // 点击的是虚拟节点直接返回
+        if (this.pointArr[index].fictitious) {
+            return
+        }
         this.pointArr.splice(index, 1)
+        // 删除后需要重新创建虚拟节点
+        this.removeFictitiousPoints()
+        this.insertFictitiousPoints()
+    }
+
+    /** 
+     * javascript comment 
+     * @Author: 王林25 
+     * @Date: 2021-01-22 09:32:47 
+     * @Desc: 始终闭合模式下的当前鼠标移动到的非固定点 
+     */
+    areaToPoint(x, y) {
+        this.areaToPointPos = {
+            x,
+            y
+        }
     }
 
     /** 
@@ -179,7 +221,7 @@ export default class MarkItem {
      */
     render() {
         // 填充区域
-        if (this.isClosePath) {
+        if (this.isClosePath || this.area) {
             this.renderArea()
         }
         // 绘制线段
@@ -210,9 +252,10 @@ export default class MarkItem {
         this.ctx.save()
         this.ctx.fillStyle = this.fillColor
         this.ctx.beginPath()
-        for (let i = 0; i < this.pointArr.length; i++) {
-            let x = this.pointArr[i].x
-            let y = this.pointArr[i].y
+        let _pointArr = this.pointArr.concat(this.area ? this.areaToPointPos ? [this.areaToPointPos] : [] : [])
+        for (let i = 0; i < _pointArr.length; i++) {
+            let x = _pointArr[i].x
+            let y = _pointArr[i].y
             if (i === 0) {
                 this.ctx.moveTo(x, y)
             } else {
@@ -240,9 +283,10 @@ export default class MarkItem {
         this.ctx.strokeStyle = strokeColor
         this.ctx.lineJoin = lineJoin
         this.ctx.beginPath()
-        for (let i = 0; i < this.pointArr.length; i++) {
-            let x = this.pointArr[i].x
-            let y = this.pointArr[i].y
+        let _pointArr = this.pointArr.concat(this.area ? this.areaToPointPos ? [this.areaToPointPos] : [] : [])
+        for (let i = 0; i < _pointArr.length; i++) {
+            let x = _pointArr[i].x
+            let y = _pointArr[i].y
             if (i === 0) {
                 this.ctx.moveTo(x, y)
             } else {
@@ -250,7 +294,7 @@ export default class MarkItem {
             }
         }
         // 闭合路径
-        if (this.isClosePath) {
+        if (this.isClosePath || this.area) {
             this.ctx.closePath()
         }
         // 不实际绘制出来
@@ -272,7 +316,7 @@ export default class MarkItem {
             let x = this.pointArr[i].x
             let y = this.pointArr[i].y
             if (this.isEditing || onlyPath || this.hoverActive) {
-                this.drawPoint(x, y, onlyPath)
+                this.drawPoint(x, y, onlyPath, false, this.pointArr[i].fictitious)
                 callback && callback(i)
             }
         }
@@ -281,16 +325,70 @@ export default class MarkItem {
     /** 
      * javascript comment 
      * @Author: 王林25 
+     * @Date: 2021-01-25 10:48:01 
+     * @Desc: 插入虚拟节点 
+     */
+    insertFictitiousPoints() {
+        if (!this.isEditing || !this.isClosePath || !this.enableAddPoint) {
+            return
+        }
+        // 先去掉虚拟节点
+        this.removeFictitiousPoints()
+
+        let points = []
+        let arr = this.pointArr
+        let len = arr.length
+        for (let i = 0; i < len - 1; i++) {
+            let s = arr[i]
+            let e = arr[i + 1]
+            points.push({
+                x: (s.x + e.x) / 2,
+                y: (s.y + e.y) / 2,
+                fictitious: true
+            })
+        }
+        points.push({
+            x: (arr[len - 1].x + arr[0].x) / 2,
+            y: (arr[len - 1].y + arr[0].y) / 2,
+            fictitious: true
+        })
+        
+        // 插入
+        let newArr = []
+        for (let i = 0; i < this.pointArr.length; i++) {
+            newArr.push(this.pointArr[i])
+            newArr.push(points.shift())
+        }
+
+        this.pointArr = newArr
+    }
+
+    /** 
+     * javascript comment 
+     * @Author: 王林25 
+     * @Date: 2021-01-25 14:07:12 
+     * @Desc:  去掉虚拟节点
+     */
+    removeFictitiousPoints() {
+        this.pointArr = this.getTruePointArr()
+    }
+
+    /** 
+     * javascript comment 
+     * @Author: 王林25 
      * @Date: 2020-09-27 17:57:19 
      * @Desc: 绘制点 
      */
-    drawPoint(x, y, onlyPath) {
+    drawPoint(x, y, onlyPath, beginPath, reverse) {
         let {
             customRenderPoint,
             showPoint,
             pointType,
             pointWidth
         } = this.opt
+        if (beginPath) {
+            this.ctx.beginPath()
+        }
         // 用户自定义绘制端点方法
         if (customRenderPoint) {
             customRenderPoint(this.ctx, x, y, onlyPath, this.pointStyle)
@@ -299,6 +397,11 @@ export default class MarkItem {
             this.ctx.lineWidth = this.pointStyle.lineWidth
             this.ctx.strokeStyle = this.pointStyle.strokeColor
             this.ctx.fillStyle = this.pointStyle.fillColor
+            // 反向样式，边框和填充的颜色互换，用于虚拟节点的显示
+            if (reverse) {
+                this.ctx.strokeStyle = this.pointStyle.fillColor
+                this.ctx.fillStyle = this.pointStyle.strokeColor
+            }
             switch (pointType) {
                 case 'square':
                     this.ctx.rect(x - pointWidth, y - pointWidth, pointWidth * 2, pointWidth * 2)
@@ -354,6 +457,7 @@ export default class MarkItem {
      * @Desc: 闭合路径 
      */
     closePath() {
+        this.areaToPointPos = null
         this.isClosePath = true
     }
 
@@ -372,6 +476,25 @@ export default class MarkItem {
     /** 
      * javascript comment 
      * @Author: 王林25 
+     * @Date: 2021-01-25 14:25:32 
+     * @Desc: 获取某个顶点在没有虚拟顶点的情况下的真实索引 
+     */
+    getTruePointIndex(index) {
+        if (index === -1 || this.pointArr[index].fictitious) {
+            return index
+        }
+        let count = 0
+        for (let i = 0; i < index; i++) {
+            if (this.pointArr[i].fictitious) {
+                count++
+            }
+        }
+        return index - count
+    }
+
+    /** 
+     * javascript comment 
+     * @Author: 王林25 
      * @Date: 2020-10-15 18:33:02 
      * @Desc: 停止拖动 
      */
@@ -379,6 +502,8 @@ export default class MarkItem {
         this.isDragging = false
         this.dragPointIndex = -1
         this.dragCachePointArr = []
+        // 拖动结束后恢复虚拟节点的创建
+        this.insertFictitiousPoints()
     }
 
     /** 
@@ -391,10 +516,19 @@ export default class MarkItem {
         if (!this.isDragging || this.dragPointIndex === -1) {
             return
         }
+        // 拖动的是虚拟点，则转换成真实点
+        if (this.pointArr[this.dragPointIndex].fictitious) {
+            delete this.pointArr[this.dragPointIndex].fictitious
+        }
+        // 获取某个顶点的真实索引
+        this.dragPointIndex = this.getTruePointIndex(this.dragPointIndex)
+        // 拖动时隐藏虚拟节点
+        this.removeFictitiousPoints()
         if (this.updatePointFn) {
             this.updatePointFn(this, x, y)
         } else {
             this.pointArr.splice(this.dragPointIndex, 1, {
+                ...this.pointArr[this.dragPointIndex],
                 x,
                 y
             })
@@ -413,6 +547,7 @@ export default class MarkItem {
         }
         this.pointArr = this.dragCachePointArr.map((item) => {
             return {
+                ...item,
                 x: item.x + ox,
                 y: item.y + oy
             }
@@ -472,7 +607,7 @@ export default class MarkItem {
         if (!this.checkCrossPrevCheck()) {
             return false
         }
-        let arr = this.pointArr
+        let arr = this.getTruePointArr()
         let len = arr.length
         // 即将形成的线段
         let c = {
@@ -493,7 +628,7 @@ export default class MarkItem {
         if (!this.checkCrossPrevCheck()) {
             return false
         }
-        let arr = this.pointArr
+        let arr = this.getTruePointArr()
         let len = arr.length
         let c = arr[len - 1]
         let d = arr[0]
@@ -528,7 +663,7 @@ export default class MarkItem {
      * @Desc: 创建已存在点位组成的线段 
      */
     createLineSegments(close) {
-        let arr = this.pointArr
+        let arr = this.getTruePointArr()
         let len = arr.length
         // 已存在的线段
         let lineSegments = []
@@ -555,11 +690,45 @@ export default class MarkItem {
      * @Desc: 三个端点以下不可能交叉 
      */
     checkCrossPrevCheck() {
-        let len = this.pointArr.length
+        let len = this.getTruePointArr().length
         // 三个端点以下不可能交叉
         if (len <= 2) {
             return false
         }
         return true
+    }
+
+    /** 
+     * javascript comment 
+     * @Author: 王林25 
+     * @Date: 2021-01-22 10:37:07 
+     * @Desc: 获取距离某个点最近的线段 
+     */
+    getPintNearestLine(x, y) {
+        let lineSegments = this.createLineSegments(this.isClosePath)
+        if (lineSegments.length <= 0) {
+            return null
+        }
+        if (this.dragPointIndex !== -1) {
+            if (this.dragPointIndex === 0) {
+                lineSegments.splice(0, 1)
+                lineSegments.splice(-1, 1)
+            } else {
+                lineSegments.splice(this.dragPointIndex - 1, 2)
+            }
+        }
+        let minNum = Infinity
+        let minLine
+        for (let i = 0; i < lineSegments.length; i++) {
+            let item = lineSegments[i]
+            let a = item[0]
+            let b = item[1]
+            let d = utils.getLinePointDistance(a.x, a.y, b.x, b.y, x, y)
+            if (d < minNum) {
+                minNum = d
+                minLine = item
+            }
+        }
+        return [minNum, minLine]
     }
 }
