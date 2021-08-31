@@ -1,6 +1,5 @@
 ---
-home: true
-heroImage: /logo.jpg
+home: false
 heroText: 一些小小的组件库
 tagline: 开源、实用、小而美
 actionText: 去瞅瞅 →
