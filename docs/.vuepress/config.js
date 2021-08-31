@@ -27,7 +27,7 @@ var webpackConfig = {
 };
 
 module.exports = {
-  base: '/markjs/public',
+  base: '/',
   dest: 'public',
   title: 'Markjs_一个简单的标注库',
   description: '如题。',
