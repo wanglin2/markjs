@@ -1,5 +1,5 @@
 {
-  "name": "markjs",
+  "name": "@wanglin1994/markjs",
   "version": "1.0.17",
   "description": "",
   "main": "index.js",
@@ -8,7 +8,5 @@
   },
   "author": "wanglin25",
   "license": "ISC",
-  "dependencies": {
-    "observer": "^1.0.0"
-  }
+  "dependencies": {}
 }
