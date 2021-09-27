@@ -127,9 +127,21 @@
       >
       </mpchecktext>
     </p>
-    <p>
-      ​
-      <br />
+    <p
+      style="
+        margin: 1.5em 8px;
+        -webkit-tap-highlight-color: transparent;
+        white-space: normal;
+        text-align: left;
+        color: rgb(63, 63, 63);
+        line-height: 1.75;
+        font-family: -apple-system-font, BlinkMacSystemFont, 'Helvetica Neue',
+          'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei UI',
+          'Microsoft YaHei', Arial, sans-serif;
+        font-size: 16px;
+        letter-spacing: 0.1em;
+      ">
+      ​本示例源代码请参考：<a href="https://github.com/wanglin2/markjs/blob/master/markjs-docs/src/components/Demo6.vue" target="_blank">https://github.com/wanglin2/markjs/blob/master/markjs-docs/src/components/Demo6.vue</a>
     </p>
 
     <div class="markBox" ref="markBox5"></div>
