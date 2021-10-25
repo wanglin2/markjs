@@ -140,6 +140,19 @@ export default function EditPlugin(instance, utils) {
     // 创建一个只用于渲染吸附时的顶点的标注对象
     let adsorbentMark = createNewMarkItem()
 
+    // 监听配置更新事件
+    instance.on('UPDATED_OPT', (o) => {
+        opt = {
+            ...defaultOpt,
+            ...instance.opt
+        }
+        instance.clearCanvas()
+        markItemList.forEach((item) => {
+            item.updateOpt(opt)
+            item.render()
+        })
+    })
+
     /** 
      * javascript comment 
      * @Author: 王林25 
@@ -357,7 +370,7 @@ export default function EditPlugin(instance, utils) {
             return false
         }
         isCreateMarking = state
-        instance.observer.publish('IS-CREATE-MARKING-CHANGE', state)
+        instance.emit('IS-CREATE-MARKING-CHANGE', state)
         return true
     }
 
@@ -413,7 +426,7 @@ export default function EditPlugin(instance, utils) {
             return false
         }
         curEditingMarkItem = item
-        instance.observer.publish('CURRENT-MARK-ITEM-CHANGE', item)
+        instance.emit('CURRENT-MARK-ITEM-CHANGE', item)
         return true
     }
 
@@ -436,7 +449,7 @@ export default function EditPlugin(instance, utils) {
             }
             let deleteItem = markItemList.splice(index, 1)
             render()
-            instance.observer.publish('DELETE-MARKING-ITEM', deleteItem[0], index)
+            instance.emit('DELETE-MARKING-ITEM', deleteItem[0], index)
             return true
         }
         return false
@@ -452,7 +465,7 @@ export default function EditPlugin(instance, utils) {
         markItemList = []
         setMarkEditItem(null)
         render()
-        instance.observer.publish('DELETE-ALL-MARKING-ITEM')
+        instance.emit('DELETE-ALL-MARKING-ITEM')
     }
 
     /** 
@@ -550,7 +563,7 @@ export default function EditPlugin(instance, utils) {
         if (isReadonly) {
             return
         }
-        if (lastIsDragging) {
+        if (!opt.mobile && lastIsDragging) {
             lastIsDragging = false
             return
         }
@@ -576,7 +589,7 @@ export default function EditPlugin(instance, utils) {
                 if (opt.noCrossing) {
                     let cross = curEditingMarkItem.checkNextLineSegmentCross(_x, _y)
                     if (cross) {
-                        instance.observer.publish('LINE-CROSS', curEditingMarkItem)
+                        instance.emit('LINE-CROSS', curEditingMarkItem)
                     } else {
                         curEditingMarkItem.pushPoint(_x, _y)
                     }
@@ -592,7 +605,7 @@ export default function EditPlugin(instance, utils) {
                     curEditingMarkItem.pushPoint(_x, _y)
                     markItemList.push(curEditingMarkItem)
                 } else { // 超出数量限制
-                    instance.observer.publish('COUNT-LIMIT', curEditingMarkItem)
+                    instance.emit('COUNT-LIMIT', curEditingMarkItem)
                     setIsCreateMarking(false)
                 }
             }
@@ -643,19 +656,19 @@ export default function EditPlugin(instance, utils) {
                     curEditingMarkItem.removePoint(inPointIndex)
                     render()
                 } else {
-                    instance.observer.publish('NOT-ENOUGH-POINTS-REMOVE', curEditingMarkItem)
+                    instance.emit('NOT-ENOUGH-POINTS-REMOVE', curEditingMarkItem)
                 }
             } else {
                 // 端点数量不足三个
                 if (curEditingMarkItem.getPointLength() < 3) {
                     canActive = false
-                    instance.observer.publish('NOT-ENOUGH-END-POINTS', curEditingMarkItem)
+                    instance.emit('NOT-ENOUGH-END-POINTS', curEditingMarkItem)
                 } else if (opt.noCrossing && curEditingMarkItem.checkEndLineSegmentCross()) {// 线段存在交叉
                     canActive = false
-                    instance.observer.publish('LINE-CROSS', curEditingMarkItem)
+                    instance.emit('LINE-CROSS', curEditingMarkItem)
                 } else {
                     if (isCreateMarking) {
-                        instance.observer.publish('COMPLETE-CREATE-ITEM', curEditingMarkItem, e)
+                        instance.emit('COMPLETE-CREATE-ITEM', curEditingMarkItem, e)
                     }
                     setIsCreateMarking(false)
                     curEditingMarkItem.closePath()
@@ -663,7 +676,7 @@ export default function EditPlugin(instance, utils) {
                     adsorbentedPos = null
                     setMarkEditItem(null)
                     render()
-                    instance.observer.publish('COMPLETE-EDIT-ITEM', curEditingMarkItem, e)
+                    instance.emit('COMPLETE-EDIT-ITEM', curEditingMarkItem, e)
                 }
             }
         }
@@ -726,7 +739,7 @@ export default function EditPlugin(instance, utils) {
         // 拖动编辑
         if (curEditingMarkItem && curEditingMarkItem.isDragging) {
             if (curEditingMarkItem.dragPointIndex !== -1) {// 拖动单个顶点
-                curEditingMarkItem.dragPoint(...checkAdsorbent(x, y))
+                curEditingMarkItem.dragPoint(...checkAdsorbent(x, y), instance)
             } else {// 拖动整体图形
                 checkAdsorbentWhole()
                 // 控制吸附后的脱离
@@ -749,7 +762,7 @@ export default function EditPlugin(instance, utils) {
             }
             render()
             let inPointIndex = curEditingMarkItem.checkInPoints(x, y)
-            instance.observer.publish('HOVER-ITEM', curEditingMarkItem, curEditingMarkItem, checkInPathAllItems(x, y), e, inPointIndex)
+            instance.emit('HOVER-ITEM', curEditingMarkItem, curEditingMarkItem, checkInPathAllItems(x, y), e, inPointIndex)
         } else if(isCreateMarking) {// 创建新标注中
             let ox = x - dragStartPos.x
             let oy = y - dragStartPos.y
@@ -769,7 +782,7 @@ export default function EditPlugin(instance, utils) {
             }
             if (inPathItem && inPathItem.isClosePath) {
                 let inPointIndex = inPathItem.checkInPoints(x, y)
-                instance.observer.publish('HOVER-ITEM', inPathItem, curEditingMarkItem, checkInPathAllItems(x, y), e, inPointIndex)
+                instance.emit('HOVER-ITEM', inPathItem, curEditingMarkItem, checkInPathAllItems(x, y), e, inPointIndex)
             }
         }
     })
@@ -792,7 +805,7 @@ export default function EditPlugin(instance, utils) {
             dragStartPosCache.x = 0
             dragStartPosCache.y = 0
             if (opt.noCrossing && curEditingMarkItem.checkLineSegmentCross()) {
-                instance.observer.publish('LINE-CROSS', curEditingMarkItem)
+                instance.emit('LINE-CROSS', curEditingMarkItem)
                 curEditingMarkItem.pointArr = cachePointArr
                 cachePointArr = null
             }
