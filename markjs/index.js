@@ -1,12 +1,14 @@
 import Observer from './src/observer'
 import utils from './src/utils'
 import editPlugin from './src/plugins/edit'
+import merge from 'deepmerge'
 
 /*
 配置
 {
     el: Object, // 容器元素，dom元素或选择器字符串
     dbClickTime: 200,// 双击间隔事件，默认200ms
+    mobile: false// 是否是移动端模式，默认false
 }
 
 事件
@@ -104,6 +106,17 @@ class Markjs {
     /** 
      * javascript comment 
      * @Author: 王林25 
+     * @Date: 2021-10-25 13:52:52 
+     * @Desc: 更新配置 
+     */
+    updateOpt(newOpt) {
+        this.opt = merge(this.opt, newOpt)
+        this.emit('UPDATED_OPT', this.opt)
+    }
+
+    /** 
+     * javascript comment 
+     * @Author: 王林25 
      * @Date: 2020-10-15 10:35:33 
      * @Desc: 注册插件 
      */
@@ -112,6 +125,7 @@ class Markjs {
         let len = Markjs.pluginList.length
         let loopUse = () => {
             if (index >= len) {
+                this.emit('PLUGINS_LOADED')
                 return
             }
             let cur = Markjs.pluginList[index]
@@ -121,6 +135,16 @@ class Markjs {
             })
         }
         loopUse()
+    }
+
+    /** 
+     * javascript comment 
+     * @Author: 王林25 
+     * @Date: 2021-10-25 14:03:12 
+     * @Desc: 触发事件 
+     */
+    emit(event, data) {
+        this.observer.publish(event, data)
     }
 
     /** 
@@ -164,7 +188,7 @@ class Markjs {
     destroy() {
         this.unbindEvent()
         this.el.removeChild(this.canvasEle)
-        this.observer.publish('DESTORY')
+        this.emit('DESTORY')
         this.observer.clearAll()
     }
 
@@ -213,10 +237,11 @@ class Markjs {
      * @Desc: 绑定事件 
      */
     bindEvent() {
+        let isMobile = this.opt.mobile
         this.canvasEle.addEventListener('click', this.onclick)
-        this.canvasEle.addEventListener('mousedown', this.onmousedown)
-        this.canvasEle.addEventListener('mousemove', this.onmousemove)
-        window.addEventListener('mouseup', this.onmouseup)
+        this.canvasEle.addEventListener(isMobile ? 'touchstart' : 'mousedown', this.onmousedown)
+        this.canvasEle.addEventListener(isMobile ? 'touchmove' : 'mousemove', this.onmousemove)
+        window.addEventListener(isMobile ? 'touchend' : 'mouseup', this.onmouseup)
         this.canvasEle.addEventListener('mouseenter', this.onmouseenter)
         this.canvasEle.addEventListener('mouseleave', this.onmouseleave)
         window.addEventListener('click', this.onWindowClick)
@@ -229,10 +254,11 @@ class Markjs {
      * @Desc: 解绑事件 
      */
     unbindEvent() {
+        let isMobile = this.opt.mobile
         this.canvasEle.removeEventListener('click', this.onclick)
-        this.canvasEle.removeEventListener('mousedown', this.onmousedown)
-        this.canvasEle.removeEventListener('mousemove', this.onmousemove)
-        window.removeEventListener('mouseup', this.onmouseup)
+        this.canvasEle.removeEventListener(isMobile ? 'touchstart' : 'mousedown', this.onmousedown)
+        this.canvasEle.removeEventListener(isMobile ? 'touchmove' : 'mousemove', this.onmousemove)
+        window.removeEventListener(isMobile ? 'touchend' : 'mouseup', this.onmouseup)
         this.canvasEle.removeEventListener('mouseenter', this.onmouseenter)
         this.canvasEle.removeEventListener('mouseleave', this.onmouseleave)
         window.removeEventListener('click', this.onWindowClick)
@@ -251,14 +277,14 @@ class Markjs {
         }
 
         this.clickTimer = setTimeout(() => {
-            this.observer.publish('CLICK', e)
+            this.emit('CLICK', e)
         }, this.opt.dbClickTime);
 
         if (Date.now() - this.lastClickTime <= this.opt.dbClickTime) {
             clearTimeout(this.clickTimer)
             this.clickTimer = null
             this.lastClickTime = 0
-            this.observer.publish('DOUBLE-CLICK', e)
+            this.emit('DOUBLE-CLICK', e)
         }
 
         this.lastClickTime = Date.now()
@@ -271,11 +297,14 @@ class Markjs {
      * @Desc: 鼠标按下事件 
      */
     onmousedown(e) {
+        if (this.opt.mobile) {
+            e = e.touches[0]
+        }
         this.mousedownPos = {
             x: e.clientX,
             y: e.clientY
         }
-        this.observer.publish('MOUSEDOWN', e)
+        this.emit('MOUSEDOWN', e)
     }
 
     /** 
@@ -285,7 +314,10 @@ class Markjs {
      * @Desc: 鼠标移动事件 
      */
     onmousemove(e) {
-        this.observer.publish('MOUSEMOVE', e)
+        if (this.opt.mobile) {
+            e = e.touches[0]
+        }
+        this.emit('MOUSEMOVE', e)
     }
 
     /** 
@@ -295,11 +327,20 @@ class Markjs {
      * @Desc: 鼠标松开事件 
      */
     onmouseup(e) {
+        if (this.opt.mobile) {
+            e = e.touches[0]
+        }
+        if (!e) {
+            e = {
+                clientX: 0,
+                clientY: 0
+            }
+        }
         this.mouseupPos = {
             x: e.clientX,
             y: e.clientY
         }
-        this.observer.publish('MOUSEUP', e)
+        this.emit('MOUSEUP', e)
     }
 
     /** 
@@ -309,7 +350,7 @@ class Markjs {
      * @Desc: 鼠标移入事件 
      */
     onmouseenter(e) {
-        this.observer.publish('MOUSEENTER', e)
+        this.emit('MOUSEENTER', e)
     }
 
     /** 
@@ -319,7 +360,7 @@ class Markjs {
      * @Desc: 鼠标移出事件 
      */
     onmouseleave(e) {
-        this.observer.publish('MOUSELEAVE', e)
+        this.emit('MOUSELEAVE', e)
     }
 
     /** 
@@ -329,7 +370,7 @@ class Markjs {
      * @Desc: window的点击事件 
      */
     onWindowClick(e) {
-        this.observer.publish('WINDOW-CLICK', e)
+        this.emit('WINDOW-CLICK', e)
     }
 
     /** 

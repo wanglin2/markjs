@@ -2,7 +2,10 @@ const defaultOpt = {
     shape: {
         // 正方形
         square: {
-            create({width, height}) {
+            create({
+                width,
+                height
+            }) {
                 let _width
                 if (width > height) {
                     _width = height * 0.5
@@ -11,8 +14,7 @@ const defaultOpt = {
                 }
                 let hw = (width - _width) / 2
                 let hh = (height - _width) / 2
-                return [
-                    {
+                return [{
                         x: hw,
                         y: hh
                     },
@@ -54,6 +56,69 @@ const defaultOpt = {
                     y: even ? newY : fixPoint.y
                 }
             }
+        },
+        // 矩形
+        rectangle: {
+            create({
+                width,
+                height
+            }) {
+                let _width
+                if (width > height) {
+                    _width = height * 0.5
+                } else {
+                    _width = width * 0.5
+                }
+                let hw = (width - _width) / 2
+                let hh = (height - _width) / 2
+                return [{
+                        x: hw,
+                        y: hh
+                    },
+                    {
+                        x: hw + _width,
+                        y: hh
+                    },
+                    {
+                        x: hw + _width,
+                        y: hh + _width
+                    },
+                    {
+                        x: hw,
+                        y: hh + _width
+                    }
+                ]
+            },
+            update(instance, x, y) {
+                let xChangePoint = -1
+                let yChangePoint = -1
+                switch (instance.dragPointIndex) {
+                    case 0:
+                        xChangePoint = 3
+                        yChangePoint = 1
+                        break;
+                    case 1:
+                        xChangePoint = 2
+                        yChangePoint = 0
+                        break;
+                    case 2:
+                        xChangePoint = 1
+                        yChangePoint = 3
+                        break;
+                    case 3:
+                        xChangePoint = 0
+                        yChangePoint = 2
+                        break;
+                    default:
+                        break;
+                }
+                instance.pointArr[instance.dragPointIndex] = {
+                    x,
+                    y
+                }
+                instance.pointArr[xChangePoint].x = x
+                instance.pointArr[yChangePoint].y = y
+            }
         }
     },
     max: -1
@@ -80,9 +145,6 @@ export default function ShapePlugin(instance) {
         }
     }
     let {
-        markItemList
-    } = instance.getState()
-    let {
         _disableAllItemsEdit: disableAllItemsEdit,
         _setMarkEditItem: setMarkEditItem,
         _createNewMarkItem: createNewMarkItem,
@@ -97,6 +159,9 @@ export default function ShapePlugin(instance) {
      * @Desc: 遍历标注是否存在特定形状，有的话添加更新方法 
      */
     function addUpdate() {
+        let {
+            markItemList
+        } = instance.getState()
         markItemList.forEach((item) => {
             if (item.opt.shape && opt.shape[item.opt.shape]) {
                 item.updatePointFn = opt.shape[item.opt.shape].update
@@ -116,6 +181,9 @@ export default function ShapePlugin(instance) {
         if (!_shape) {
             return
         }
+        let {
+            markItemList
+        } = instance.getState()
         // 数量判断
         if (opt.max === -1 || markItemList.length < opt.max) {
             disableAllItemsEdit()
@@ -127,6 +195,8 @@ export default function ShapePlugin(instance) {
             instance.getState().curEditingMarkItem.closePath()
             instance.getState().curEditingMarkItem.enable()
             markItemList.push(instance.getState().curEditingMarkItem)
+            setIsCreateMarking(false)
+            instance.emit('COMPLETE-EDIT-ITEM', instance.getState().curEditingMarkItem)
         } else { // 超出数量限制
             instance.observer.publish('COUNT-LIMIT', curEditingMarkItem)
             setIsCreateMarking(false)

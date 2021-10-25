@@ -78,6 +78,32 @@ export default class MarkItem {
     constructor(ctx = null, opt = {}) {
         // canvas上下文
         this.ctx = ctx
+        this.updateOpt(opt)
+        // 点位数组{x,y}
+        this.pointArr = opt.pointArr || []
+        // 路径是否已经闭合了
+        this.isClosePath = false
+        // 是否是编辑状态
+        this.isEditing = false
+        // 是否是拖动状态
+        this.isDragging = false
+        // 拖动的端点索引，没有则代表拖拽整体
+        this.dragPointIndex = -1
+        // 点位数组缓存，用于整体拖动
+        this.dragCachePointArr = []
+        // 鼠标滑过显示可选择状态
+        this.hoverActive = false
+        // 始终闭合绘制模式下的当前鼠标移动到的非固定点
+        this.areaToPointPos = null
+    }
+
+    /** 
+     * javascript comment 
+     * @Author: 王林25 
+     * @Date: 2021-10-25 14:19:00 
+     * @Desc: 更新配置数据 
+     */
+    updateOpt(opt) {
         // 配置
         this.opt = {
             ...defaultOpt,
@@ -97,26 +123,10 @@ export default class MarkItem {
             ...defaultPointStyle,
             ...opt.pointStyle
         } : defaultPointStyle
-        // 点位数组{x,y}
-        this.pointArr = opt.pointArr || []
         // 自定义更新端点位置的方法
         this.updatePointFn = opt.updatePoint
-        // 路径是否已经闭合了
-        this.isClosePath = false
-        // 是否是编辑状态
-        this.isEditing = false
-        // 是否是拖动状态
-        this.isDragging = false
-        // 拖动的端点索引，没有则代表拖拽整体
-        this.dragPointIndex = -1
-        // 点位数组缓存，用于整体拖动
-        this.dragCachePointArr = []
-        // 鼠标滑过显示可选择状态
-        this.hoverActive = false
         // 是否是闭合绘制模式
         this.area = opt.area || false
-        // 始终闭合绘制模式下的当前鼠标移动到的非固定点
-        this.areaToPointPos = null
         // 是否允许新增节点，仅在闭合情况下的编辑期间
         this.enableAddPoint = opt.enableAddPoint || false
     }
@@ -512,7 +522,7 @@ export default class MarkItem {
      * @Date: 2020-10-15 17:04:23 
      * @Desc: 拖动某个端点
      */
-    dragPoint(x, y) {
+    dragPoint(x, y, ...args) {
         if (!this.isDragging || this.dragPointIndex === -1) {
             return
         }
@@ -525,7 +535,7 @@ export default class MarkItem {
         // 拖动时隐藏虚拟节点
         this.removeFictitiousPoints()
         if (this.updatePointFn) {
-            this.updatePointFn(this, x, y)
+            this.updatePointFn(this, x, y, ...args)
         } else {
             this.pointArr.splice(this.dragPointIndex, 1, {
                 ...this.pointArr[this.dragPointIndex],

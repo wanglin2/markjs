@@ -1,12 +1,14 @@
 {
   "name": "@wanglin1994/markjs",
-  "version": "1.0.17",
-  "description": "",
+  "version": "1.0.18",
+  "description": "一个插件化的多边形标注库",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "wanglin25",
   "license": "ISC",
-  "dependencies": {}
+  "dependencies": {
+    "deepmerge": "^4.2.2"
+  }
 }
