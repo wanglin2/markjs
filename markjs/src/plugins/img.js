@@ -58,6 +58,8 @@ export default function ImgPlugin(instance) {
     let actEditHeight = 0
     // 最终渲染宽高与图片实际宽高的比例
     let ratio = 0
+    // 是否是刷新图片
+    let isRefreshImage = false
 
     /** 
      * javascript comment 
@@ -75,18 +77,42 @@ export default function ImgPlugin(instance) {
      * @Date: 2020-10-22 14:33:06 
      * @Desc: 加载图片 
      */
-    utils.loadImage(opt.img)
-        .then((img) => {
-            image = img
-            imgActWidth = image.width
-            imgActHeight = image.height
-            init()
-            _resolve()
-        })
-        .catch((e) => {
-            instance.observer.publish('IMG-LOAD-ERROR', e)
-            _resolve()
-        })
+    function loadImage () {
+        utils.loadImage(opt.img)
+            .then((img) => {
+                image = img
+                imgActWidth = image.width
+                imgActHeight = image.height
+                init()
+                if (!isRefreshImage) {
+                    _resolve()
+                }
+            })
+            .catch((e) => {
+                instance.observer.publish('IMG-LOAD-ERROR', e)
+                if (!isRefreshImage) {
+                    _resolve()
+                }
+            })
+    }
+
+    loadImage()
+    
+    /** 
+     * javascript comment 
+     * @Author: 王林25 
+     * @Date: 2021-11-09 11:11:23 
+     * @Desc: 刷新图片 
+     */
+    function refreshImage (img) {
+        if (!img) {
+            return
+        }
+        isRefreshImage = true
+        instance.opt.img = img
+        opt.img = img
+        loadImage()
+    }
 
     /** 
      * javascript comment 
@@ -107,6 +133,9 @@ export default function ImgPlugin(instance) {
             zIndex: 2
         })
         drawImg()
+        if (isRefreshImage) {
+            instance._render()
+        }
     }
 
     /** 
@@ -178,7 +207,7 @@ export default function ImgPlugin(instance) {
      * @Desc: 绘制图片 
      */
     function drawImg () {
-        imgCanvasEle = document.createElement('canvas')
+        imgCanvasEle = imgCanvasEle || document.createElement('canvas')
         let style = {
             zIndex: 1
         }
@@ -193,6 +222,7 @@ export default function ImgPlugin(instance) {
 
     instance.image = image
     instance.ratio = ratio
+    instance.refreshImage = refreshImage
 
     return promise
 }

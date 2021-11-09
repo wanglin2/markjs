@@ -143,8 +143,8 @@ class Markjs {
      * @Date: 2021-10-25 14:03:12 
      * @Desc: 触发事件 
      */
-    emit(event, data) {
-        this.observer.publish(event, data)
+    emit(event, ...args) {
+        this.observer.publish(event, ...args)
     }
 
     /** 
