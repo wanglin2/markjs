@@ -76,7 +76,7 @@ export default {
       mark3.exitCreate();
     },
     createShape3() {
-      mark3.createShapeMarkItem("square", {
+      mark3.createShapeMarkItem("rectangle", {
         fillColor: "rgba(250,50,57,0.30)",
       });
     },

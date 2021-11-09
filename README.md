@@ -24,6 +24,19 @@ $ npm i @wanglin1994/markjs
 import Markjs from '@wanglin1994/markjs'
 ```
 
+## 本地开发
+
+```bash
+cd markjs
+npm link
+```
+
+```bash
+cd markjs-docs
+npm link @wanglin1994/markjs
+npm run serve
+```
+
 ## 推荐用法
 
 推荐使用该示例的配置项，区域模式，带吸附功能，可删除新增节点。
@@ -233,7 +246,9 @@ export default {
 
 使用图片插件需要传入图片插件的参数`img`，指定图片的地址。
 
-在线示例：[https://wanglin2.github.io/markjs/#demo3](https://wanglin2.github.io/markjs/#demo3)。
+在线示例1：[https://wanglin2.github.io/markjs/#demo3](https://wanglin2.github.io/markjs/#demo3)。
+
+在线示例2，可切换图片，同时该示例也结合了特定形状：[https://wanglin2.github.io/markjs/#demo3-2](https://wanglin2.github.io/markjs/#demo3-2)。
 
 ```vue
 <template>
@@ -899,6 +914,12 @@ Markjs.use(imgPlugin, 0)
 | ----- | ---------------------------------- |
 | image | 图片对象 |
 | ratio | 图片实际的宽高与容器宽高的比例 |
+
+#### 实例方法
+
+| 方法名  | 说明                               | 参数 |
+| ----- | ---------------------------------- | ------ |
+| refreshImage（1.0.19+） | 切换图片 | img（新的图片地址） |
 
 ### 5.鼠标样式支持插件mouse
 
