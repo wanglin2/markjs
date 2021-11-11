@@ -79,6 +79,8 @@ export default class MarkItem {
         // canvas上下文
         this.ctx = ctx
         this.updateOpt(opt)
+        // 自定义更新端点位置的方法
+        this.updatePointFn = opt.updatePoint
         // 点位数组{x,y}
         this.pointArr = opt.pointArr || []
         // 路径是否已经闭合了
@@ -123,8 +125,6 @@ export default class MarkItem {
             ...defaultPointStyle,
             ...opt.pointStyle
         } : defaultPointStyle
-        // 自定义更新端点位置的方法
-        this.updatePointFn = opt.updatePoint
         // 是否是闭合绘制模式
         this.area = opt.area || false
         // 是否允许新增节点，仅在闭合情况下的编辑期间
