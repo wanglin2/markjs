@@ -32,6 +32,8 @@
 
 <script>
 import Markjs from "@wanglin1994/markjs";
+import scalePlugin from '@wanglin1994/markjs/src/plugins/scale';
+Markjs.use(scalePlugin);
 
 let mark0 = null;
 export default {

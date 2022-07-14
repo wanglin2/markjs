@@ -66,10 +66,12 @@ class Markjs {
             ...opt
         }
         // 容器元素
-        this.el = typeof opt.el === 'string' ? document.querySelector(opt.el) : opt.el
+        this.el = this.originEl = typeof opt.el === 'string' ? document.querySelector(opt.el) : opt.el
         if (!this.el) {
             throw new Error('容器元素获取失败')
         }
+        // 创建一个新的容器
+        this.crateContainer()
         // 容器元素的尺寸信息
         this.elRectInfo = null
         // canvas元素
@@ -165,6 +167,25 @@ class Markjs {
      */
     off(token) {
         this.observer.unsubscribe(token)
+    }
+
+    /** 
+     * javascript comment 
+     * @Author: 王林25 
+     * @Date: 2022-07-14 09:38:12 
+     * @Desc: 创建一个新的容器 
+     */
+    crateContainer() {
+        let newEl = document.createElement('div')
+        newEl.className = 'markjsContainer'
+        newEl.style.cssText = `
+            position: relative;
+            width: 100%;
+            height: 100%;
+        `
+        this.el.style.overflow = 'hidden'
+        this.el.appendChild(newEl)
+        this.el = newEl
     }
 
     /** 
@@ -297,14 +318,16 @@ class Markjs {
      * @Desc: 鼠标按下事件 
      */
     onmousedown(e) {
+        let mobileEvent = null
         if (this.opt.mobile) {
+            mobileEvent = e
             e = e.touches[0]
         }
         this.mousedownPos = {
             x: e.clientX,
             y: e.clientY
         }
-        this.emit('MOUSEDOWN', e)
+        this.emit('MOUSEDOWN', e, mobileEvent)
     }
 
     /** 
@@ -314,10 +337,12 @@ class Markjs {
      * @Desc: 鼠标移动事件 
      */
     onmousemove(e) {
+        let mobileEvent = null
         if (this.opt.mobile) {
+            mobileEvent = e
             e = e.touches[0]
         }
-        this.emit('MOUSEMOVE', e)
+        this.emit('MOUSEMOVE', e, mobileEvent)
     }
 
     /** 
@@ -327,7 +352,9 @@ class Markjs {
      * @Desc: 鼠标松开事件 
      */
     onmouseup(e) {
+        let mobileEvent = null
         if (this.opt.mobile) {
+            mobileEvent = e
             e = e.touches[0]
         }
         if (!e) {
@@ -340,7 +367,7 @@ class Markjs {
             x: e.clientX,
             y: e.clientY
         }
-        this.emit('MOUSEUP', e)
+        this.emit('MOUSEUP', e, mobileEvent)
     }
 
     /** 

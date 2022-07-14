@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- pc端 -->
     <Demo1></Demo1>
     <Demo2></Demo2>
     <Demo4></Demo4>
@@ -7,6 +8,9 @@
     <Demo32></Demo32>
     <Demo5></Demo5>
     <Demo6></Demo6>
+    <!-- 手机端 -->
+    <!-- <Demo33></Demo33> -->
+    <!-- <Demo34></Demo34> -->
   </div>
 </template>
 
@@ -17,7 +21,9 @@ import Demo3 from "./components/Demo3";
 import Demo4 from "./components/Demo4";
 import Demo5 from "./components/Demo5";
 import Demo6 from "./components/Demo6";
-import Demo32 from './components/Demo3-2'
+import Demo32 from './components/Demo3-2';
+import Demo33 from './components/Demo3-3';
+import Demo34 from './components/Demo3-4';
 
 export default {
   name: "App",
@@ -28,7 +34,9 @@ export default {
     Demo4,
     Demo5,
     Demo6,
-    Demo32
+    Demo32,
+    Demo33,
+    Demo34
   },
 };
 </script>

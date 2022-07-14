@@ -1,6 +1,6 @@
 {
   "name": "@wanglin1994/markjs",
-  "version": "1.0.20",
+  "version": "1.0.21",
   "description": "一个插件化的多边形标注库",
   "main": "index.js",
   "scripts": {
