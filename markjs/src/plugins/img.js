@@ -179,6 +179,7 @@ export default function ImgPlugin(instance) {
             instance.el.style.position = 'relative'
         }
         if (opt.elBg) {
+            instance.originEl.style.background = opt.elBg
             instance.el.style.background = opt.elBg
         }
     }

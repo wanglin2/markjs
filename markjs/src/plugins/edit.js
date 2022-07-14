@@ -139,6 +139,15 @@ export default function EditPlugin(instance, utils) {
     let lastIsDragging = false
     // 创建一个只用于渲染吸附时的顶点的标注对象
     let adsorbentMark = createNewMarkItem()
+    // 鼠标按下和松开的距离
+    let mousedownPos = {
+        x: 0,
+        y: 0
+    }
+    let mouseupPos = {
+        x: 0,
+        y: 0
+    }
 
     // 监听配置更新事件
     instance.on('UPDATED_OPT', (o) => {
@@ -560,6 +569,9 @@ export default function EditPlugin(instance, utils) {
      * @Desc: 监听单击事件 
      */
     instance.on('CLICK', (e) => {
+        if (!opt.mobile && (Math.abs(mouseupPos.x - mousedownPos.x) >= 5 || Math.abs(mouseupPos.y - mousedownPos.y) >= 5)) {
+            return
+        }
         if (isReadonly) {
             return
         }
@@ -696,6 +708,10 @@ export default function EditPlugin(instance, utils) {
      * @Desc: 监听鼠标按下事件 
      */
     instance.on('MOUSEDOWN', (e) => {
+        mousedownPos = {
+            x: e.clientX,
+            y: e.clientY
+        }
         if (isReadonly) {
             return
         }
@@ -728,7 +744,7 @@ export default function EditPlugin(instance, utils) {
      * @Date: 2020-10-15 16:57:32 
      * @Desc: 监听鼠标移动事件 
      */
-    instance.on('MOUSEMOVE', (e) => {
+    instance.on('MOUSEMOVE', (e, mobileEvent) => {
         if (isReadonly) {
             return
         }
@@ -738,6 +754,13 @@ export default function EditPlugin(instance, utils) {
         } = instance.toCanvasPos(e)
         // 拖动编辑
         if (curEditingMarkItem && curEditingMarkItem.isDragging) {
+            if (!instance.opt.mobile) {
+                e.stopPropagation()
+                e.preventDefault()
+            } else {
+                mobileEvent.stopPropagation()
+                mobileEvent.preventDefault()
+            }
             if (curEditingMarkItem.dragPointIndex !== -1) {// 拖动单个顶点
                 curEditingMarkItem.dragPoint(...checkAdsorbent(x, y), instance)
             } else {// 拖动整体图形
@@ -794,6 +817,10 @@ export default function EditPlugin(instance, utils) {
      * @Desc: 监听鼠标松开事件 
      */
     instance.on('MOUSEUP', (e) => {
+        mouseupPos = {
+            x: e.clientX,
+            y: e.clientY
+        }
         if (isReadonly) {
             return
         }

@@ -198,7 +198,7 @@ export default function ShapePlugin(instance) {
             setIsCreateMarking(false)
             instance.emit('COMPLETE-EDIT-ITEM', instance.getState().curEditingMarkItem)
         } else { // 超出数量限制
-            instance.observer.publish('COUNT-LIMIT', curEditingMarkItem)
+            instance.observer.publish('COUNT-LIMIT', instance.getState().curEditingMarkItem)
             setIsCreateMarking(false)
         }
         render()
