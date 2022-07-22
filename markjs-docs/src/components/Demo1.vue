@@ -9,7 +9,13 @@
         type="primary"
         @click="create0"
         :disabled="!editing0 || !!curEditMarkItem0"
-        >新增标注</el-button
+        >新增空标注</el-button
+      >
+      <el-button
+        type="primary"
+        @click="create01"
+        :disabled="!editing0 || !!curEditMarkItem0"
+        >新增非空标注</el-button
       >
       <el-button type="primary" @click="exit0" :disabled="!isCreateMarking0"
         >退出新增</el-button
@@ -105,6 +111,11 @@ export default {
     },
     create0() {
       mark0.createMarkItem();
+    },
+    create01() {
+      mark0.createMarkItem({
+        pointArr: [{"x":0.236875,"y":0.57890625},{"x":0.300625,"y":0.44265625},{"x":0.364375,"y":0.30640625},{"x":0.4625,"y":0.28640625},{"x":0.560625,"y":0.26640625},{"x":0.633125,"y":0.38390625},{"x":0.705625,"y":0.50140625},{"x":0.650625,"y":0.65515625},{"x":0.595625,"y":0.80890625},{"x":0.489375,"y":0.78515625},{"x":0.383125,"y":0.76140625},{"x":0.31,"y":0.67015625}]
+      });
     },
     exit0() {
       mark0.exitCreate();

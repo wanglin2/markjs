@@ -396,7 +396,22 @@ export default function EditPlugin(instance, utils) {
         }
         reset()
         createMarkItemOpt = _opt
-        setIsCreateMarking(true)
+        // 创建时传了点位数据那么直接新增一个标注
+        if (createMarkItemOpt && createMarkItemOpt.pointArr && createMarkItemOpt.pointArr.length > 0) {
+            let _markItem = createNewMarkItem({
+                pointArr: createMarkItemOpt.pointArr.map((point) => {
+                    return {
+                        x: point.x * instance.canvasEleRectInfo.width,
+                        y: point.y * instance.canvasEleRectInfo.height
+                    }
+                })
+            })
+            _markItem.closePath()
+            markItemList.push(_markItem)
+            render()
+        } else {
+            setIsCreateMarking(true)
+        }
         if (opt.single) {
             instance.clearCanvas()
         }
