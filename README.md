@@ -1038,3 +1038,7 @@ Markjs.use(scalePlugin)
 如果某个属性或者方法通过`this`访问不到而你又需要，可以提交`issue`，我会及时添加。
 
 插件开发完毕，你可以将它发布到`npm`，供其他人使用。
+
+# License
+
+[MIT](https://opensource.org/licenses/MIT)
