@@ -421,10 +421,15 @@ class Markjs {
         let cy = e.clientY
         let {
             left,
-            top
+            top,
+            originWidth = width,
+            originHeight = height
         } = this.canvasEle.getBoundingClientRect()
-        let x = cx - left
-        let y = cy - top
+        // 响应父元素上添加的缩放比例
+        const factorX = originWidth / this.canvasEle.offsetWidth;
+        const factorY = originHeight / this.canvasEle.offsetHeight;
+        let x = (cx - left) / factorX;
+        let y = (cy - top) / factorY;
         return {
             x,
             y
