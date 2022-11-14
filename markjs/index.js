@@ -422,8 +422,8 @@ class Markjs {
         let {
             left,
             top,
-            originWidth = width,
-            originHeight = height
+            width: originWidth,
+            height: originHeight
         } = this.canvasEle.getBoundingClientRect()
         // 响应父元素上添加的缩放比例
         const factorX = originWidth / this.canvasEle.offsetWidth;
