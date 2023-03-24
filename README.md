@@ -28,11 +28,13 @@ import Markjs from '@wanglin1994/markjs'
 
 ```bash
 cd markjs
+npm i
 npm link
 ```
 
 ```bash
 cd markjs-docs
+npm i 
 npm link @wanglin1994/markjs
 npm run serve
 ```
@@ -944,6 +946,7 @@ Markjs.use(mousePlugin)
 | cursorTips | 提示信息，对象，格式见表5-1 | Object | —      |  |
 | showPen | 否显示鼠标指针画笔 | Boolean | —      | true |
 | penImg | 自定义鼠标指针图片地址 | String | —      |  |
+| zIndex | v1.0.23+，鼠标跟随的元素的z-index值 | Number | —      | 999 |
 
 ##### 表5-1 提示信息cursorTips对象格式
 

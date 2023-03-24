@@ -79,6 +79,7 @@ export default {
         },
         fillColor: "rgba(0,136,255,0.30)",
         dbClickRemovePoint: true,
+        zIndex: 9999
       });
       mark0.on("CURRENT-MARK-ITEM-CHANGE", (item) => {
         this.curEditMarkItem0 = item;

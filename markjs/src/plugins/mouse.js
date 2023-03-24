@@ -8,7 +8,8 @@
         EDITING_POINT: '拖拽移动节点，修改区域边界，双击删除节点'
     },
     showPen: true,// 是否显示笔
-    penImg: ''// 鼠标指针图片
+    penImg: '',// 鼠标指针图片
+    zIndex: 999
 }
 
 属性
@@ -27,7 +28,8 @@ const defaultOpt = {
         EDITING: '拖曳移动节点或区域，双击结束操作',
         HOVER: '单击激活该区域并进入编辑状态',
         EDITING_POINT: '拖拽移动节点，修改区域边界，双击删除节点'
-    }
+    },
+    zIndex: 999
 }
 
 /** 
@@ -71,7 +73,7 @@ export default function mousePlugin(instance){
             padding: 0 10px;
             user-select: none;
             display: none;
-            z-index: 3;
+            z-index: ${opt.zIndex};
         `
         document.body.appendChild(cursorTipEle)
     }
