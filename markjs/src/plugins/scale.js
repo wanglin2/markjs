@@ -16,14 +16,14 @@ export default function EditPlugin(instance, utils) {
   let maxScale = 10;
 
   // 重写toCanvasPos方法
-  let originToCanvasPos = instance.toCanvasPos.bind(instance);
-  instance.toCanvasPos = (e) => {
-    let res = originToCanvasPos(e);
-    return {
-      x: res.x / scale,
-      y: res.y / scale,
-    };
-  };
+  // let originToCanvasPos = instance.toCanvasPos.bind(instance);
+  // instance.toCanvasPos = (e) => {
+  //   let res = originToCanvasPos(e);
+  //   return {
+  //     x: res.x / scale,
+  //     y: res.y / scale,
+  //   };
+  // };
 
   // 鼠标滚动事件
   instance.el.addEventListener("wheel", (e) => {
